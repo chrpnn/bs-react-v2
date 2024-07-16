@@ -1,0 +1,21 @@
+$button-color: #7B61FF;
+$text-color: #fff;
+
+.root {
+    background-color: $button-color;
+    color: $text-color;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 12px;   
+    font-size: 24px;
+    font-weight: 700;
+    min-height: 56px;
+    max-width: 100%;
+    cursor: pointer;
+    border: none;
+
+    &:hover {
+        background: darken($button-color, 5%);
+    }
+}

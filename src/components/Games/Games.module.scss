@@ -1,0 +1,29 @@
+@import "../../variables.scss";
+
+.root {
+    h2 {
+        font-size: 18px;
+        letter-spacing: 1px;
+    }
+
+    .titleGroup {
+        display: flex;
+        justify-content: space-between;
+        padding: 15px;
+    }
+
+    .toggleShowAll {
+        cursor: pointer;
+        border: none;
+        background-color: transparent;
+        color: $accent-color;
+        font-size: 14px;
+    }
+
+    .cards {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 15px;
+        padding: 0 15px 100px 15px;
+    }
+}

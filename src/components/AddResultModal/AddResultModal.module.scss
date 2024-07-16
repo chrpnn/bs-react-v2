@@ -1,0 +1,92 @@
+@import "../../variables.scss";
+
+.root {
+    height: 100vh;
+    width: 100vw;
+    background-color: rgba(0, 0, 0, 0.55);
+    position: fixed;
+    top: 0;
+    left: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+    padding-inline: 15px;
+    z-index: 1;
+
+    &.active {
+        pointer-events: all;
+        opacity: 1;
+    }
+
+    .formGroup {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 20px;        
+    }
+
+    .form {        
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+        width: 100%;
+
+        .label {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            color: $text-color;
+        }
+
+        .input {
+            width: 200px;
+            height: 50px;
+            color: $text-color;
+            border: $border-color;
+            background-color: $input-color;
+            border-radius: 12px;
+            padding-inline: 10px;
+        }
+    }
+    
+    .button {
+        width: 100%;
+        cursor: pointer;
+        background-color: $accent-color;
+        border: none;
+        border-radius: 12px;         
+        color: $text-color;
+        font-size: 24px;
+        font-weight: 700;
+        min-height: 56px;
+        max-width: 100%;
+    }
+}
+
+.modal {
+    padding: 20px;
+    border-radius: 12px;
+    background-color: $background-color;
+
+
+    &.active {
+        animation: modalFadeIn 0.3s;
+    }
+}
+
+
+@keyframes modalFadeIn {
+    from {
+        transform: translateY(-20%);
+        opacity: 0;
+    }
+
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+

@@ -1,0 +1,32 @@
+@import "../../variables.scss";
+
+.root {
+    display: flex;
+    flex-direction: column;
+    background-color: transparent;
+    border: none;
+    font-size: 10px;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    gap: 5px;
+
+    .icon {
+        width: 30px;
+        transition: filter 0.3s ease;
+    }
+
+    .label {
+        color: $description-color;
+        transition: color 0.3s ease;
+    }    
+}
+
+.active .icon {
+    filter: brightness(0) saturate(100%) invert(34%) sepia(86%) saturate(743%) hue-rotate(184deg) brightness(93%) contrast(99%);
+}
+
+.active .label {
+    color: #007bff;
+}
+

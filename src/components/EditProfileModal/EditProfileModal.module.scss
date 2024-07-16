@@ -1,0 +1,95 @@
+@import "../../variables.scss";
+
+.root {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: fixed;
+    left: 0;
+    top: 0;
+    height: 100vh;
+    width: 100vw;
+    padding-inline: 15px;
+    z-index: 1;
+    background-color: rgba(0, 0, 0, 0.5);
+    visibility: hidden;
+    opacity: 0;
+    transition: visibility 0s, opacity 0.3s;
+
+    &.active {
+        visibility: visible;
+        opacity: 1;
+    }
+}
+
+.modal {
+    background-color: #28333f;
+    padding: 20px;
+    border-radius: 12px;
+    border-radius: 10px;
+
+
+    &.active {
+        animation: modalFadeIn 0.3s;
+    }
+}
+
+@keyframes modalFadeIn {
+    from {
+        transform: translateY(-20%);
+        opacity: 0;
+    }
+
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+.formGroup {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;  
+}
+
+.form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    width: 100%;
+}
+
+.label {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    color: $text-color;
+}
+
+.input {
+    width: 200px;
+    height: 50px;
+    color: $text-color;
+    border: $border-color;
+    background-color: $input-color;
+    border-radius: 12px;
+    padding-inline: 10px;
+}
+
+.button {
+    width: 100%;
+    cursor: pointer;
+    background-color: $accent-color;
+    border: none;
+    border-radius: 12px;         
+    color: $text-color;
+    font-size: 24px;
+    font-weight: 700;
+    min-height: 56px;
+    max-width: 100%;
+}
+
+.button:hover {
+    background-color: #0056b3;
+}
