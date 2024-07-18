@@ -12,7 +12,8 @@ import twitterLogo from "../../assets/Frame.svg";
 import facebookLogo from "../../assets/Facebook-logo.svg";
 
 import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
-import { auth } from "../../firebase";
+import { auth, db } from "../../firebase";
+import { collection, doc, setDoc } from "firebase/firestore";
 
 export default function SignUp() {
     const [email, setEmail] = React.useState("");
@@ -31,13 +32,20 @@ export default function SignUp() {
         createUserWithEmailAndPassword(auth, email, password)
             .then((userCredential) => {
                 const user = userCredential.user;
-                console.log("user:",user);
                 return updateProfile(user, {
                     displayName: nickname,
-                });
+                }).then(() => user);
             })
             .then((user) => {
-                console.log(user);
+                // Добавление документа пользователя в Firestore
+                const userDocRef = doc(collection(db, "users"), user.uid);
+                return setDoc(userDocRef, {
+                    name: nickname,
+                    email: email
+                });
+            })
+            .then(() => {
+                console.log("User profile updated and user document created in Firestore");
                 setEmail("");
                 setPassword("");
                 setConfirmPassword("");
@@ -45,7 +53,10 @@ export default function SignUp() {
                 setNickname("");
                 navigate("/home");
             })
-            .catch((err) => console.log(err));
+            .catch((err) => {
+                console.error(err);
+                setError(err.message);
+            });
     };
 
     return (

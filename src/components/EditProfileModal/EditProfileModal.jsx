@@ -1,6 +1,8 @@
 import React from "react";
 import { updateProfile } from "firebase/auth";
 import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
+import { db } from "../../firebase"; // Импорт Firestore
+import { doc, getDocs, collection, query, where, updateDoc } from "firebase/firestore";
 
 import styles from "./EditProfileModal.module.scss";
 
@@ -9,6 +11,7 @@ export default function EditProfileModal({ active, setActive, user }) {
         user?.displayName || ""
     );
     const [newAvatar, setNewAvatar] = React.useState(null);
+    const [error, setError] = React.useState("");
 
     const handleNameChange = (e) => {
         setNewDisplayName(e.target.value);
@@ -18,6 +21,13 @@ export default function EditProfileModal({ active, setActive, user }) {
         setNewAvatar(e.target.files[0]);
     };
 
+    const isDisplayNameUnique = async (displayName) => {
+        const usersRef = collection(db, "users");
+        const q = query(usersRef, where("name", "==", displayName));
+        const querySnapshot = await getDocs(q);
+        return querySnapshot.empty;
+    };
+
     const handleSaveChanges = async () => {
         if (!user) {
             console.error("User is not defined");
@@ -25,6 +35,15 @@ export default function EditProfileModal({ active, setActive, user }) {
         }
 
         try {
+            // Проверка уникальности имени пользователя
+            if (newDisplayName) {
+                const isUnique = await isDisplayNameUnique(newDisplayName);
+                if (!isUnique) {
+                    setError("Имя пользователя уже занято");
+                    return;
+                }
+            }
+
             const updates = {};
             if (newDisplayName) {
                 updates.displayName = newDisplayName;
@@ -36,12 +55,21 @@ export default function EditProfileModal({ active, setActive, user }) {
                 const avatarURL = await getDownloadURL(avatarRef);
                 updates.photoURL = avatarURL;
             }
+
             if (Object.keys(updates).length > 0) {
                 await updateProfile(user, updates);
+                // Обновление документа пользователя в Firestore
+                const userDocRef = doc(db, "users", user.uid);
+                await updateDoc(userDocRef, {
+                    name: newDisplayName || user.displayName,
+                    ...(newAvatar && { avatarURL: updates.photoURL })
+                });
             }
+
             setActive(false);
         } catch (error) {
             console.error("Ошибка при обновлении профиля:", error);
+            setError("Ошибка при обновлении профиля");
         }
     };
 
@@ -75,6 +103,7 @@ export default function EditProfileModal({ active, setActive, user }) {
                                 onChange={handleAvatarChange}
                             />
                         </label>
+                        {error && <p className={styles.error}>{error}</p>}
                         <button className={styles.button} onClick={handleSaveChanges}>
                             Сохранить изменения
                         </button>

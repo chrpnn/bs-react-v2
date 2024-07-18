@@ -1,5 +1,6 @@
 import React from "react";
-import { getFirestore, collection, query, where, getDocs } from "firebase/firestore";
+import { getFirestore, collection, query, where, onSnapshot } from "firebase/firestore";
+import { useAuth } from "../../hooks/useAuth";
 import GameResult from "../GameResult/GameResult";
 import Search from "../Search/Search";
 
@@ -10,6 +11,9 @@ export default function History({ setGameCount, setPercentWinsCount }) {
     const [searchValue, setSearchValue] = React.useState("");
     const [showAll, setShowAll] = React.useState(false);
 
+
+    const user = useAuth();
+
     const search = searchValue ? `search=${searchValue}` : "";
 
     const sortedGames = React.useMemo(() => {
@@ -18,33 +22,40 @@ export default function History({ setGameCount, setPercentWinsCount }) {
 
     React.useEffect(() => {
         const db = getFirestore();
-    
+
         const fetchGames = async () => {
+            if (!user) return; // Ждем, пока будет доступен пользователь
+
             try {
+                const userGamesRef = collection(db, `users/${user.uid}/games`);
                 const q = searchValue
-                    ? query(collection(db, "games"), where("gameName", "==", searchValue))
-                    : collection(db, "games");
-    
-                const querySnapshot = await getDocs(q);
-                const arr = querySnapshot.docs.map((doc) => ({
-                    id: doc.id,
-                    ...doc.data(),
-                }));
-    
-                setGames(arr);
-                setGameCount(arr.length);
-                setPercentWinsCount(
-                    (arr.filter((item) => item.status === "win").length / arr.length) *
-                    100
-                );
-    
+                    ? query(userGamesRef, where("gameName", "==", searchValue))
+                    : userGamesRef;
+
+                // Используем onSnapshot для получения данных в реальном времени
+                const unsubscribe = onSnapshot(q, (querySnapshot) => {
+                    const arr = querySnapshot.docs.map((doc) => ({
+                        id: doc.id,
+                        ...doc.data(),
+                    }));
+
+                    setGames(arr);
+                    setGameCount(arr.length);
+                    setPercentWinsCount(
+                        (arr.filter((item) => item.status === "win").length / arr.length) *
+                        100
+                    );
+                });
+
+                // Возвращаем функцию отписки, чтобы отписаться от потока данных при размонтировании компонента
+                return () => unsubscribe();
             } catch (error) {
                 console.error("Error fetching the games data:", error);
             }
         };
-    
+
         fetchGames();
-    }, [searchValue, setGameCount, setPercentWinsCount]);
+    }, [user, searchValue, setGameCount, setPercentWinsCount]);
 
     const displayedGames = showAll ? sortedGames : sortedGames.slice(0, 3);
 

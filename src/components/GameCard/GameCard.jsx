@@ -4,8 +4,6 @@ import styles from "./GameCard.module.scss";
 
 export default function GameCard({ id, date, gameName, status, count, gameStats, imageUrl }) {
 
-    console.log(imageUrl)
-
     return (
         <div className={styles.root} key={id}>
             <img src={imageUrl ? imageUrl : "https://page-images.websim.ai/Carcassonne_1024x1024xHDQ9l7SLW9TYfKZJgxb004f20d958db.jpg"} alt="" />

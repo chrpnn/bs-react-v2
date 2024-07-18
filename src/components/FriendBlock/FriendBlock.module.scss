@@ -1,0 +1,40 @@
+@import "../../variables.scss";
+
+.root {
+    
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border: 1px solid rgba(255, 255, 255, 0.0352941176);
+    background-color: rgba(47, 60, 80, 0.3803921569);
+    min-height: 70px;
+    min-width: 163px;
+    border-radius: 12px;
+    margin: 15px;
+    overflow: hidden;
+
+    img {
+        width: 70px;
+        object-fit: cover;
+        height: 100%;
+        border-right: 1px solid rgba(255, 255, 255, 0.0352941176);
+    }
+
+    p { 
+        color: #CDCDCD;
+        font-size: 12px;
+    }
+
+    .userInfo {
+        
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: start;
+        padding-inline-end: 15px;
+
+        p {
+            color: #CDCDCD;
+        }
+    }
+}

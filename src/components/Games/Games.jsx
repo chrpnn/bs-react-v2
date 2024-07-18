@@ -1,6 +1,7 @@
 import React from "react";
-import { getFirestore, collection, getDocs } from "firebase/firestore";
+import { getFirestore, collection, onSnapshot } from "firebase/firestore";
 import { ref, getDownloadURL, getStorage } from "firebase/storage";
+import { useAuth } from "../../hooks/useAuth"; 
 import GameCard from "../GameCard/GameCard";
 import FastInfo from "../FastInfo/FastInfo";
 
@@ -15,59 +16,81 @@ export default function Games() {
 
     const displayedGames = showAll ? uniqueGames : uniqueGames.slice(0, 4);
 
+    const user = useAuth(); 
+
     React.useEffect(() => {
+        if (!user) {
+            console.error("User is not defined");
+            return;
+        }
+
         const db = getFirestore();
         const storage = getStorage();
 
         const fetchGames = async () => {
             try {
-                const querySnapshot = await getDocs(collection(db, "games"));
-                const arr = querySnapshot.docs.map((doc) => ({
-                    id: doc.id,
-                    ...doc.data(),
-                }));
+                const gamesRef = collection(db, `users/${user.uid}/games`);
+
+                // Слушаем изменения в реальном времени
+                const unsubscribeGames = onSnapshot(gamesRef, (querySnapshot) => {
+                    const arr = querySnapshot.docs.map((doc) => ({
+                        id: doc.id,
+                        ...doc.data(),
+                    }));
+                    setGames(arr);
+                });
 
                 // Получение коллекции boardgames
-                const querySnapshotBg = await getDocs(collection(db, "boardgames"));
-                const arrBg = querySnapshotBg.docs.map((doc) => ({
-                    id: doc.id,
-                    ...doc.data(),
-                }));
+                const boardgamesRef = collection(db, "boardgames");
+                const unsubscribeBoardgames = onSnapshot(boardgamesRef, async (querySnapshotBg) => {
+                    const arrBg = querySnapshotBg.docs.map((doc) => ({
+                        id: doc.id,
+                        ...doc.data(),
+                    }));
 
-                // Создание отображения name -> imageURL
-                const imageUrlMap = {};
-                for (const game of arrBg) {
-                    const storageRef = ref(storage, game.imageURL);
-                    const url = await getDownloadURL(storageRef);
-                    imageUrlMap[game.name] = url;
-                }
-                setImageUrlMap(imageUrlMap);
-                console.log("imageUrlMap:", imageUrlMap);
-
-                setGames(arr);
-
-                const gameCounts = {};
-                arr.forEach((game) => {
-                    if (!gameCounts[game.gameName]) {
-                        gameCounts[game.gameName] = { ...game, count: 0, wins: 0 }; 
+                    // Создание отображения name -> imageURL
+                    const imageUrlMap = {};
+                    for (const game of arrBg) {
+                        const storageRef = ref(storage, game.imageURL);
+                        const url = await getDownloadURL(storageRef);
+                        imageUrlMap[game.name] = url;
                     }
-                    gameCounts[game.gameName].count += 1;
-                    if (game.status === "win") {
-                        gameCounts[game.gameName].wins += 1; 
-                    }
+                    setImageUrlMap(imageUrlMap);
                 });
-                const gameStats = Object.values(gameCounts).map(game => ({
-                    ...game,
-                    winPercentage: (game.wins / game.count) * 100 
-                }));
-                setUniqueGames(Object.values(gameCounts));
-                setGameStats(gameStats); 
+
+                // Очистка подписок при размонтировании компонента
+                return () => {
+                    unsubscribeGames();
+                    unsubscribeBoardgames();
+                };
             } catch (error) {
                 console.error("Error fetching the games data:", error);
             }
         };
+
         fetchGames();
-    }, []);
+    }, [user]); // Добавляем зависимость от user
+
+    React.useEffect(() => {
+        const gameCounts = {};
+        games.forEach((game) => {
+            if (!gameCounts[game.gameName]) {
+                gameCounts[game.gameName] = { ...game, count: 0, wins: 0 };
+            }
+            gameCounts[game.gameName].count += 1;
+            if (game.status === "win") {
+                gameCounts[game.gameName].wins += 1;
+            }
+        });
+
+        const gameStats = Object.values(gameCounts).map(game => ({
+            ...game,
+            winPercentage: (game.wins / game.count) * 100
+        }));
+
+        setUniqueGames(Object.values(gameCounts));
+        setGameStats(gameStats);
+    }, [games]);
 
     return (
         <div className={styles.root}>

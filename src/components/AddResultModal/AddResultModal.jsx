@@ -1,6 +1,8 @@
 import React from "react";
+import { getFirestore, collection, doc, getDocs, addDoc } from "firebase/firestore";
+import { useAuth } from "../../hooks/useAuth";
+
 import styles from "./AddResultModal.module.scss";
-import { getFirestore, collection, getDocs, addDoc } from "firebase/firestore";
 
 export default function AddResultModal({ active, setActive }) {
     const [gameName, setGameName] = React.useState("");
@@ -10,6 +12,9 @@ export default function AddResultModal({ active, setActive }) {
     const [selectedGame, setSelectedGame] = React.useState(''); // Выбранная игра// Список игр, загружаемый с сервера
 
     const db = getFirestore(); // Инициализация Firestore
+    const user = useAuth(); // Получение текущего пользователя
+    console.log("Текущий пользователь:", user);
+
 
     // Используем useEffect для загрузки списка игр с сервера при монтировании компонента
     React.useEffect(() => {
@@ -47,7 +52,7 @@ export default function AddResultModal({ active, setActive }) {
         };
 
         try {
-            await addDoc(collection(db, "games"), newGameResult);
+            await addDoc(collection(db, `users/${user.uid}/games`), newGameResult);
             setActive(false); // Закрытие модального окна
             console.log("Document written");
             setGameName(""); // Сброс полей формы

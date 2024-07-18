@@ -1,2 +1,38 @@
 @import "./libs/normalize";
+
 @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap');
+
+.header__logo {
+    display: flex;
+    gap: 10px;
+    margin-block-end: 40px;
+
+    & h1 {
+        font-size: 30px;
+    }
+
+    & :last-child {
+        margin-left: auto;
+        cursor: pointer;
+    }
+}
+
+.container {
+    height: 100vh;
+    background-color: aqua;
+}
+
+.content__categories {
+    margin-block-end: 40px;
+}
+
+.content__items {
+    display: flex;
+    flex-direction: column;
+    gap: 40px;
+
+}
+
+.content__search {
+    margin-block-end: 40px;
+}

@@ -7,8 +7,6 @@ import SmileLogo from "../../assets/smile-circle-svgrepo-com.svg";
 import SadLogo from "../../assets/sad-circle-svgrepo-com.svg";
 
 export default function FastInfo({ uniqueGames, gameStats }) {
-    console.log(uniqueGames);
-    console.log(gameStats );
 
     const findMaxObject = (arr) => {
         let maxObject = null;
@@ -19,8 +17,6 @@ export default function FastInfo({ uniqueGames, gameStats }) {
                 maxObject = obj;
             }
         });
-        console.log("Максимальное значение count:", maxCount);
-        console.log("Объект с максимальным значением count:", maxObject);
         return { maxCount, maxObject };
     };
 

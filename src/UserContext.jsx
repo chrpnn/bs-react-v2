@@ -5,7 +5,7 @@ import { auth } from "./firebase";
 // Создаем контекст пользователя
 const UserContext = createContext();
 
-// Создаем хук для использования контекста
+// хук для использования контекста
 export const useUser = () => useContext(UserContext);
 
 export const UserProvider = ({ children }) => {
