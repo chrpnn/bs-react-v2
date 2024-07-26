@@ -25,10 +25,10 @@
         display: flex;
         flex-direction: column;
         align-items: center;
-        gap: 20px;        
+        gap: 20px;
     }
 
-    .form {        
+    .form {
         display: flex;
         flex-direction: column;
         gap: 15px;
@@ -36,28 +36,49 @@
 
         .label {
             display: flex;
-            justify-content: flex-end;
             gap: 10px;
             color: $text-color;
+            position: relative;
         }
 
         .input {
-            width: 200px;
+            width: 100%;
             height: 50px;
-            color: $text-color;
-            border: $border-color;
-            background-color: $input-color;
+            color: $text-second-color;
+            border: 1px solid $border-color;
+            background-color: transparent;
             border-radius: 12px;
             padding-inline: 10px;
+
+            &:focus {
+                border: 1px solid $accent-color;
+                transition: all 0.3s;
+            }
+        
+            &:focus + .borderText {
+                color: $accent-color;
+                transition: all 0.3s;
+            }
+        }
+
+        .borderText {
+            color: $border-color;
+            font-size: 10px;
+            position: absolute;
+            background-color: #28333f;
+            z-index: 1;
+            padding-inline: 4px;
+            top: -8px;
+            left: 10px;
         }
     }
-    
+
     .button {
         width: 100%;
         cursor: pointer;
         background-color: $accent-color;
         border: none;
-        border-radius: 12px;         
+        border-radius: 12px;
         color: $text-color;
         font-size: 24px;
         font-weight: 700;
@@ -70,13 +91,12 @@
     padding: 20px;
     border-radius: 12px;
     background-color: $background-color;
-
+    width: 100%;
 
     &.active {
         animation: modalFadeIn 0.3s;
     }
 }
-
 
 @keyframes modalFadeIn {
     from {
@@ -89,4 +109,3 @@
         opacity: 1;
     }
 }
-

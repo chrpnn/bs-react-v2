@@ -1,11 +1,4 @@
-$header-color: #393762;
-$description-color: #ccc;
-$background-color: #28333f;
-$input-color: #2f3c50;
-$text-color: #fff;
-$accent-color: #7b61ff;
-$devider-color: #4b576b;
-$border-color: #4b576b;
+@import "../../variables.scss";
 
 .root {
     min-height: 58px;
@@ -21,6 +14,7 @@ $border-color: #4b576b;
         gap: 10px;
         flex: 1;
         cursor: pointer;
+        
 
         img {
             width: 48px; 

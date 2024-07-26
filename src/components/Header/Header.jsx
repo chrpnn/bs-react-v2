@@ -1,11 +1,12 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import Skeleton from "react-loading-skeleton";
+import "react-loading-skeleton/dist/skeleton.css";
 import { useNavigate } from "react-router-dom";
 import { signOut } from "firebase/auth";
 import { auth } from "../../firebase";
 
 import styles from "./Header.module.scss";
 
-// import settingsLogo from "../../assets/menu.svg";
 import avatar from "../../assets/Default.jpg";
 import logoutLogo from "../../assets/logout-2-svgrepo-com.svg";
 import { useUser } from "../../UserContext";
@@ -15,11 +16,18 @@ export default function Header() {
   const { user } = useUser();
   const navigate = useNavigate();
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    if (user) {
+      setIsLoading(false);
+    }
+  }, [user]);
 
   const handleLogout = async () => {
     try {
       await signOut(auth);
-      navigate("/start"); 
+      navigate("/start");
     } catch (error) {
       console.error("Ошибка при выходе:", error);
     }
@@ -32,13 +40,32 @@ export default function Header() {
   return (
     <div>
       <div className={styles.root}>
-        {/* <img src={settingsLogo} alt="" /> */}
         <div className={styles.avatarGroup} onClick={handleAvatarClick}>
-          <img src={user?.photoURL || avatar} alt="avatar" />
+          {isLoading ? (
+            <Skeleton
+              circle={true}
+              height={48}
+              width={48}
+              baseColor="#cccccc20"
+              highlightColor="#cccccc50"
+            />
+          ) : (
+            <img src={user?.photoURL || avatar} alt="avatar" />
+          )}
           <p>
             Привет!
             <br />
-            {user ? user.displayName : "Guest"}
+            {isLoading ? (
+              <Skeleton
+                width={89}
+                baseColor="#cccccc20"
+                highlightColor="#cccccc50"
+              />
+            ) : user ? (
+              user.displayName
+            ) : (
+              "Guest"
+            )}
           </p>
         </div>
         <div className={styles.notificationGroup}>
@@ -48,7 +75,11 @@ export default function Header() {
         </div>
       </div>
 
-      <EditProfileModal active={isModalOpen} setActive={setIsModalOpen} user={user} />
+      <EditProfileModal
+        active={isModalOpen}
+        setActive={setIsModalOpen}
+        user={user}
+      />
     </div>
   );
 }

@@ -9,6 +9,8 @@ import {
 import { useAuth } from "../../hooks/useAuth";
 import GameResult from "../GameResult/GameResult";
 import Search from "../Search/Search";
+import Skeleton from "react-loading-skeleton";
+import "react-loading-skeleton/dist/skeleton.css";
 
 import styles from "./History.module.scss";
 
@@ -16,10 +18,9 @@ export default function History({ setGameCount, setPercentWinsCount }) {
     const [games, setGames] = React.useState([]);
     const [searchValue, setSearchValue] = React.useState("");
     const [showAll, setShowAll] = React.useState(false);
+    const [isLoading, setIsLoading] = React.useState(true);
 
     const user = useAuth();
-    console.log(searchValue);
-    // const search = searchValue ? `search=${searchValue}` : "";
 
     const sortedGames = React.useMemo(() => {
         return games.slice().sort((a, b) => new Date(b.date) - new Date(a.date));
@@ -55,12 +56,14 @@ export default function History({ setGameCount, setPercentWinsCount }) {
                         (arr.filter((item) => item.status === "win").length / arr.length) *
                         100
                     );
+                    setIsLoading(false);
                 });
 
                 // Возвращаем функцию отписки, чтобы отписаться от потока данных при размонтировании компонента
                 return () => unsubscribe();
             } catch (error) {
                 console.error("Error fetching the games data:", error);
+                setIsLoading(false);
             }
         };
 
@@ -82,11 +85,22 @@ export default function History({ setGameCount, setPercentWinsCount }) {
             </div>
 
             <Search searchValue={searchValue} setSearchValue={setSearchValue} />
-            <div className={styles.container}>
-                {displayedGames.map((obj, i) => (
-                    <GameResult key={obj.id} {...obj} />
-                ))}
-            </div>
+
+
+            {isLoading ? (
+                <div className={styles.container}>
+                    <Skeleton height={72} borderRadius={12} marginBottom={12} baseColor="#cccccc07" highlightColor="#cccccc10" />
+                    <Skeleton height={72} borderRadius={12} marginBottom={12} baseColor="#cccccc07" highlightColor="#cccccc10"/>
+                    <Skeleton height={72} borderRadius={12} marginBottom={12} baseColor="#cccccc07" highlightColor="#cccccc10"/>
+                </div>
+            ) : (
+                <div className={styles.container}>
+                    {displayedGames.map((obj, i) => (
+                        <GameResult key={obj.id} {...obj} />
+                    ))}
+                </div>
+            )}
+
         </div>
     );
 }

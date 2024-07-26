@@ -5,9 +5,12 @@
     bottom: 0;
     width: 100%;
     display: flex;
-    justify-content: space-around;
+    justify-content: space-evenly;
     background: radial-gradient(circle at 20% 50%, #393762 0%, #28333f 96%);
-    border-top-left-radius: 24px;
-    border-top-right-radius: 24px;
     padding-block: 10px;
+
+    .divider {
+        width: 2px;
+        background-color: $devider-color;
+    }
 }

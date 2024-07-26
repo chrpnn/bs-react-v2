@@ -1,18 +1,9 @@
-$header-color: #393762;
-$background-color: #7b61ff;
-$header-color: #393762;
-$description-color: #ccc;
-$input-color: #2f3c50;
-$text-color: #fff;
-$text-second-color: #cdcdcd;
-$accent-color: #7b61ff;
-$devider-color: #4b576b;
-$border-color: #4b576b;
+@import "../../variables.scss";
 
 .root {
     background-color: $header-color;
     min-height: 100vh;
-    background: #28333F;
+    background: #28333f;
 
     .topInfo {
         background: rgb(123, 97, 255);
@@ -57,12 +48,12 @@ $border-color: #4b576b;
                     color: $text-second-color;
                 }
             }
-
-            .rating {}
         }
     }
 }
 
 .main {
-    background: radial-gradient(circle at 100% 100%, rgba(241, 73, 132, 0.2) 0%, rgba(241,73,133,0) 100%);
+    background: radial-gradient(circle at 100% 100%,
+            rgba(241, 73, 132, 0.2) 0%,
+            rgba(241, 73, 133, 0) 100%);
 }

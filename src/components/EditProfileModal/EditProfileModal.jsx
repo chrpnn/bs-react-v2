@@ -2,7 +2,14 @@ import React from "react";
 import { updateProfile } from "firebase/auth";
 import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { db } from "../../firebase"; // Импорт Firestore
-import { doc, getDocs, collection, query, where, updateDoc } from "firebase/firestore";
+import {
+    doc,
+    getDocs,
+    collection,
+    query,
+    where,
+    updateDoc,
+} from "firebase/firestore";
 
 import styles from "./EditProfileModal.module.scss";
 
@@ -12,13 +19,18 @@ export default function EditProfileModal({ active, setActive, user }) {
     );
     const [newAvatar, setNewAvatar] = React.useState(null);
     const [error, setError] = React.useState("");
+    const [fileName, setFileName] = React.useState("");
 
     const handleNameChange = (e) => {
         setNewDisplayName(e.target.value);
     };
 
     const handleAvatarChange = (e) => {
-        setNewAvatar(e.target.files[0]);
+        const file = e.target.files[0];
+        if (file) {
+            setNewAvatar(file);
+            setFileName(file.name); // Обновление состояния с именем файла
+        }
     };
 
     const isDisplayNameUnique = async (displayName) => {
@@ -62,7 +74,7 @@ export default function EditProfileModal({ active, setActive, user }) {
                 const userDocRef = doc(db, "users", user.uid);
                 await updateDoc(userDocRef, {
                     name: newDisplayName || user.displayName,
-                    ...(newAvatar && { avatarURL: updates.photoURL })
+                    ...(newAvatar && { avatarURL: updates.photoURL }),
                 });
             }
 
@@ -86,22 +98,23 @@ export default function EditProfileModal({ active, setActive, user }) {
                     <h2>Изменить профиль</h2>
                     <div className={styles.form}>
                         <label className={styles.label}>
-                            Новое имя:
                             <input
                                 className={styles.input}
                                 type="text"
                                 value={newDisplayName}
                                 onChange={handleNameChange}
                             />
+                            <span className={styles.borderText}>Новое имя</span>
                         </label>
-                        <label className={styles.label}>
-                            Новый аватар:
+                        <label className={styles.fileLabel}>
                             <input
-                                className={styles.input}
+                                className={styles.fileInput}
                                 type="file"
                                 accept="image/*"
                                 onChange={handleAvatarChange}
                             />
+                            <span className={styles.borderText}>Загрузить аватар</span>
+                            {fileName && <span className={styles.fileName}>{fileName}</span>}
                         </label>
                         {error && <p className={styles.error}>{error}</p>}
                         <button className={styles.button} onClick={handleSaveChanges}>

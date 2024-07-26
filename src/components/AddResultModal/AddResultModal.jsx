@@ -1,5 +1,11 @@
 import React from "react";
-import { getFirestore, collection, doc, getDocs, addDoc } from "firebase/firestore";
+import {
+    getFirestore,
+    collection,
+    doc,
+    getDocs,
+    addDoc,
+} from "firebase/firestore";
 import { useAuth } from "../../hooks/useAuth";
 
 import styles from "./AddResultModal.module.scss";
@@ -9,11 +15,10 @@ export default function AddResultModal({ active, setActive }) {
     const [date, setDate] = React.useState("");
     const [status, setStatus] = React.useState("win");
     const [boardgames, setBoardgames] = React.useState([]);
-    const [selectedGame, setSelectedGame] = React.useState(''); // Выбранная игра// Список игр, загружаемый с сервера
+    const [selectedGame, setSelectedGame] = React.useState(""); // Выбранная игра// Список игр, загружаемый с сервера
 
     const db = getFirestore(); // Инициализация Firestore
     const user = useAuth(); // Получение текущего пользователя
-
 
     // Используем useEffect для загрузки списка игр с сервера при монтировании компонента
     React.useEffect(() => {
@@ -37,7 +42,6 @@ export default function AddResultModal({ active, setActive }) {
 
     // Функция для добавления результата игры
     const handleAddGame = async () => {
-        console.log("Selected game:", selectedGame);
         if (!selectedGame || !selectedGame.name) {
             alert("Please select a game."); // Проверка на выбор игры
             return;
@@ -80,10 +84,9 @@ export default function AddResultModal({ active, setActive }) {
                 onClick={(e) => e.stopPropagation()}
             >
                 <div className={styles.formGroup}>
-                    <h2>Add New Result</h2>
+                    <h2>Добавить результат</h2>
                     <div className={styles.form}>
                         <label className={styles.label}>
-                            Game:
                             <select
                                 className={styles.input}
                                 value={selectedGame ? selectedGame.name : ""}
@@ -95,20 +98,19 @@ export default function AddResultModal({ active, setActive }) {
                                         {game.name.toUpperCase()}
                                     </option>
                                 ))}
-                            </select>                            
+                            </select>
+                            <span className={styles.borderText}>Название игры</span>
                         </label>
-                        
                         <label className={styles.label}>
-                            Date:
                             <input
                                 className={styles.input}
                                 type="date"
                                 value={date}
                                 onChange={(e) => setDate(e.target.value)}
                             />
+                            <span className={styles.borderText}>Дата игры</span>
                         </label>
                         <label className={styles.label}>
-                            Status:
                             <select
                                 className={styles.input}
                                 value={status}
@@ -117,6 +119,7 @@ export default function AddResultModal({ active, setActive }) {
                                 <option value="win">Win</option>
                                 <option value="lose">Lose</option>
                             </select>
+                            <span className={styles.borderText}>Результат</span>
                         </label>
                         <button
                             className={styles.button}

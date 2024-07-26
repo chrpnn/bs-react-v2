@@ -46,6 +46,7 @@ export default function Footer() {
                     navigate("/");
                 }}
             />
+            <div className={styles.divider} />
             <FooterNavButton
                 icon={addGroupIcon}
                 label="Groups"
@@ -56,6 +57,7 @@ export default function Footer() {
                     navigate("/groups");
                 }}
             />
+            <div className={styles.divider} />
             <FooterNavButton
                 icon={addFriendIcon}
                 label="Friends"

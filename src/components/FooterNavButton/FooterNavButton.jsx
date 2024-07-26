@@ -1,7 +1,7 @@
 import React from 'react';
 import styles from './FooterNavButton.module.scss';
 
-export default function FooterNavButton({ icon, label, isActive, setActiveButton, onClick }) {
+export default function FooterNavButton({ icon, isActive, label,setActiveButton, onClick }) {
     const handleClick = () => {
         setActiveButton(label);
         if (onClick) {
@@ -12,7 +12,6 @@ export default function FooterNavButton({ icon, label, isActive, setActiveButton
     return (
         <button className={`${styles.root} ${isActive ? styles.active : ''}`} onClick={handleClick}>
             <img src={icon} alt={label} className={`${styles.icon} ${isActive ? styles.activeIcon : ''}`} />
-            <span className={`${styles.label} ${isActive ? styles.activeLabel : ''}`}>{label}</span>
         </button>
     );
 }

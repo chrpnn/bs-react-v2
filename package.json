@@ -11,14 +11,14 @@
     "preview": "vite preview",
     "predeploy": "npm run build",
     "deploy": "gh-pages -d dist"
-    
   },
   "dependencies": {
+    "firebase": "^10.12.2",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
+    "react-loading-skeleton": "^3.4.0",
     "react-router-dom": "^6.23.0",
-    "sass": "^1.76.0",
-    "firebase": "^10.12.2"
+    "sass": "^1.76.0"
   },
   "devDependencies": {
     "@types/react": "^18.3.3",
@@ -28,7 +28,7 @@
     "eslint-plugin-react": "^7.34.2",
     "eslint-plugin-react-hooks": "^4.6.2",
     "eslint-plugin-react-refresh": "^0.4.7",
-    "vite": "^5.3.1",
-    "gh-pages": "^6.1.1"
+    "gh-pages": "^6.1.1",
+    "vite": "^5.3.1"
   }
 }
