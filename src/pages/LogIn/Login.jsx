@@ -34,7 +34,7 @@ export default function LogIn() {
                 setEmail("");
                 setPassword("");
                 setError("");
-                navigate("/home");
+                navigate("/");
             })
             .catch((err) => {
                 console.log(err);

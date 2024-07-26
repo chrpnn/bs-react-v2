@@ -45,18 +45,18 @@ export default function FastInfo({ uniqueGames, gameStats }) {
         <div className={styles.root}>
             <div className={styles.infoBlock}>
                 <img src={PopLogo} alt="Popular" />
-                <p className={styles.title}>{maxObject && maxObject.gameName ? maxObject.gameName : "Untitled"}</p>
+                <p className={styles.title}>{maxObject && maxObject.gameName ? maxObject.gameName.toUpperCase() : "Untitled"}</p>
                 <p>Партий всего: {maxCount}</p>
 
             </div>
             <div className={styles.infoBlock}>
                 <img src={SmileLogo} alt="Smile" />
-                <p className={styles.title}>{maxWinGame && maxWinGame.gameName ? maxWinGame.gameName : "Untitled"}</p>
+                <p className={styles.title}>{maxWinGame && maxWinGame.gameName ? maxWinGame.gameName.toUpperCase() : "Untitled"}</p>
                 <p>Побед: {maxWinGame ? maxWinGame.winPercentage.toFixed(1) : 0} %</p>
             </div>
             <div className={styles.infoBlock}>
                 <img src={SadLogo} alt="Sad" />
-                <p className={styles.title}>{minWinGame && minWinGame.gameName ? minWinGame.gameName : "Untitled"}</p>
+                <p className={styles.title}>{minWinGame && minWinGame.gameName ? minWinGame.gameName.toUpperCase() : "Untitled"}</p>
                 <p>Побед: {minWinGame ? minWinGame.winPercentage.toFixed(1) : 0} %</p>
             </div>
         </div>

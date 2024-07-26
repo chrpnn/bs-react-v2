@@ -13,7 +13,6 @@ export default function AddResultModal({ active, setActive }) {
 
     const db = getFirestore(); // Инициализация Firestore
     const user = useAuth(); // Получение текущего пользователя
-    console.log("Текущий пользователь:", user);
 
 
     // Используем useEffect для загрузки списка игр с сервера при монтировании компонента
@@ -68,7 +67,6 @@ export default function AddResultModal({ active, setActive }) {
         const name = e.target.value;
         console.log(name);
         const game = boardgames.find((g) => g.name === name);
-        console.log(game);
         setSelectedGame(game); // Установка объекта выбранной игры
     };
 
@@ -91,10 +89,10 @@ export default function AddResultModal({ active, setActive }) {
                                 value={selectedGame ? selectedGame.name : ""}
                                 onChange={handleGameChange}
                             >
-                                <option value="">Select a game</option>
+                                <option value="">Выбери игру</option>
                                 {boardgames.map((game) => (
                                     <option key={game.id} value={game.name}>
-                                        {game.name}
+                                        {game.name.toUpperCase()}
                                     </option>
                                 ))}
                             </select>                            

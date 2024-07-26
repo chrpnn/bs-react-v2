@@ -8,7 +8,7 @@ export default function GameCard({ id, date, gameName, status, count, gameStats,
         <div className={styles.root} key={id}>
             <img src={imageUrl ? imageUrl : "https://page-images.websim.ai/Carcassonne_1024x1024xHDQ9l7SLW9TYfKZJgxb004f20d958db.jpg"} alt="" />
             <div className={styles.description}>
-                <h3>{gameName ? gameName : "Untitled"}</h3>
+                <h3>{gameName ? gameName.toUpperCase() : "Untitled"}</h3>
                 <p>Игр всего: {count}</p>
                 <p>Побед: {gameStats.find(game => game.gameName === gameName).wins} </p>
                 <p>Поражений: {count - gameStats.find(game => game.gameName === gameName).wins} </p>

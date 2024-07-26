@@ -1,7 +1,7 @@
 import React from "react";
 import { getFirestore, collection, onSnapshot } from "firebase/firestore";
 import { ref, getDownloadURL, getStorage } from "firebase/storage";
-import { useAuth } from "../../hooks/useAuth"; 
+import { useAuth } from "../../hooks/useAuth";
 import GameCard from "../GameCard/GameCard";
 import FastInfo from "../FastInfo/FastInfo";
 
@@ -16,7 +16,7 @@ export default function Games() {
 
     const displayedGames = showAll ? uniqueGames : uniqueGames.slice(0, 4);
 
-    const user = useAuth(); 
+    const user = useAuth();
 
     React.useEffect(() => {
         if (!user) {
@@ -42,21 +42,24 @@ export default function Games() {
 
                 // Получение коллекции boardgames
                 const boardgamesRef = collection(db, "boardgames");
-                const unsubscribeBoardgames = onSnapshot(boardgamesRef, async (querySnapshotBg) => {
-                    const arrBg = querySnapshotBg.docs.map((doc) => ({
-                        id: doc.id,
-                        ...doc.data(),
-                    }));
+                const unsubscribeBoardgames = onSnapshot(
+                    boardgamesRef,
+                    async (querySnapshotBg) => {
+                        const arrBg = querySnapshotBg.docs.map((doc) => ({
+                            id: doc.id,
+                            ...doc.data(),
+                        }));
 
-                    // Создание отображения name -> imageURL
-                    const imageUrlMap = {};
-                    for (const game of arrBg) {
-                        const storageRef = ref(storage, game.imageURL);
-                        const url = await getDownloadURL(storageRef);
-                        imageUrlMap[game.name] = url;
+                        // Создание отображения name -> imageURL
+                        const imageUrlMap = {};
+                        for (const game of arrBg) {
+                            const storageRef = ref(storage, game.imageURL);
+                            const url = await getDownloadURL(storageRef);
+                            imageUrlMap[game.name] = url;
+                        }
+                        setImageUrlMap(imageUrlMap);
                     }
-                    setImageUrlMap(imageUrlMap);
-                });
+                );
 
                 // Очистка подписок при размонтировании компонента
                 return () => {
@@ -83,9 +86,9 @@ export default function Games() {
             }
         });
 
-        const gameStats = Object.values(gameCounts).map(game => ({
+        const gameStats = Object.values(gameCounts).map((game) => ({
             ...game,
-            winPercentage: (game.wins / game.count) * 100
+            winPercentage: (game.wins / game.count) * 100,
         }));
 
         setUniqueGames(Object.values(gameCounts));
@@ -106,7 +109,12 @@ export default function Games() {
             <FastInfo uniqueGames={uniqueGames} gameStats={gameStats} />
             <div className={styles.cards}>
                 {displayedGames.map((obj, i) => (
-                    <GameCard gameStats={gameStats} imageUrl={imageUrlMap[obj.gameName]} key={obj.id} {...obj} />
+                    <GameCard
+                        gameStats={gameStats}
+                        imageUrl={imageUrlMap[obj.gameName]}
+                        key={obj.id}
+                        {...obj}
+                    />
                 ))}
             </div>
         </div>

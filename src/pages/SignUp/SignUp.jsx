@@ -51,7 +51,7 @@ export default function SignUp() {
                 setConfirmPassword("");
                 setError("");
                 setNickname("");
-                navigate("/home");
+                navigate("/");
             })
             .catch((err) => {
                 console.error(err);

@@ -1,5 +1,11 @@
 import React from "react";
-import { getFirestore, collection, query, where, onSnapshot } from "firebase/firestore";
+import {
+    getFirestore,
+    collection,
+    query,
+    where,
+    onSnapshot,
+} from "firebase/firestore";
 import { useAuth } from "../../hooks/useAuth";
 import GameResult from "../GameResult/GameResult";
 import Search from "../Search/Search";
@@ -11,10 +17,9 @@ export default function History({ setGameCount, setPercentWinsCount }) {
     const [searchValue, setSearchValue] = React.useState("");
     const [showAll, setShowAll] = React.useState(false);
 
-
     const user = useAuth();
-
-    const search = searchValue ? `search=${searchValue}` : "";
+    console.log(searchValue);
+    // const search = searchValue ? `search=${searchValue}` : "";
 
     const sortedGames = React.useMemo(() => {
         return games.slice().sort((a, b) => new Date(b.date) - new Date(a.date));
@@ -28,9 +33,14 @@ export default function History({ setGameCount, setPercentWinsCount }) {
 
             try {
                 const userGamesRef = collection(db, `users/${user.uid}/games`);
-                const q = searchValue
-                    ? query(userGamesRef, where("gameName", "==", searchValue))
+                const q = searchValue.toLowerCase()
+                    ? query(
+                        userGamesRef,
+                        where("gameName", ">=", searchValue.toLowerCase()),
+                        where("gameName", "<=", searchValue.toLowerCase() + "\uf8ff")
+                    )
                     : userGamesRef;
+                console.log("ищем", q);
 
                 // Используем onSnapshot для получения данных в реальном времени
                 const unsubscribe = onSnapshot(q, (querySnapshot) => {
