@@ -86,12 +86,29 @@ export default function History({ setGameCount, setPercentWinsCount }) {
 
             <Search searchValue={searchValue} setSearchValue={setSearchValue} />
 
-
             {isLoading ? (
                 <div className={styles.container}>
-                    <Skeleton height={72} borderRadius={12} marginBottom={12} baseColor="#cccccc07" highlightColor="#cccccc10" />
-                    <Skeleton height={72} borderRadius={12} marginBottom={12} baseColor="#cccccc07" highlightColor="#cccccc10"/>
-                    <Skeleton height={72} borderRadius={12} marginBottom={12} baseColor="#cccccc07" highlightColor="#cccccc10"/>
+                    <Skeleton
+                        height={72}
+                        borderRadius={12}
+                        marginBottom={12}
+                        baseColor="#cccccc07"
+                        highlightColor="#cccccc10"
+                    />
+                    <Skeleton
+                        height={72}
+                        borderRadius={12}
+                        marginBottom={12}
+                        baseColor="#cccccc07"
+                        highlightColor="#cccccc10"
+                    />
+                    <Skeleton
+                        height={72}
+                        borderRadius={12}
+                        marginBottom={12}
+                        baseColor="#cccccc07"
+                        highlightColor="#cccccc10"
+                    />
                 </div>
             ) : (
                 <div className={styles.container}>
@@ -100,7 +117,6 @@ export default function History({ setGameCount, setPercentWinsCount }) {
                     ))}
                 </div>
             )}
-
         </div>
     );
 }

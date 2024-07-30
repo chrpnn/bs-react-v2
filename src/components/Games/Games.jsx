@@ -4,6 +4,8 @@ import { ref, getDownloadURL, getStorage } from "firebase/storage";
 import { useAuth } from "../../hooks/useAuth";
 import GameCard from "../GameCard/GameCard";
 import FastInfo from "../FastInfo/FastInfo";
+import Skeleton from "react-loading-skeleton";
+import "react-loading-skeleton/dist/skeleton.css";
 
 import styles from "./Games.module.scss";
 
@@ -13,6 +15,7 @@ export default function Games() {
     const [uniqueGames, setUniqueGames] = React.useState([]);
     const [gameStats, setGameStats] = React.useState([]);
     const [showAll, setShowAll] = React.useState(false);
+    const [isLoading, setIsLoading] = React.useState(true);
 
     const displayedGames = showAll ? uniqueGames : uniqueGames.slice(0, 4);
 
@@ -58,6 +61,7 @@ export default function Games() {
                             imageUrlMap[game.name] = url;
                         }
                         setImageUrlMap(imageUrlMap);
+                        setIsLoading(false);
                     }
                 );
 
@@ -68,6 +72,7 @@ export default function Games() {
                 };
             } catch (error) {
                 console.error("Error fetching the games data:", error);
+                setIsLoading(false);
             }
         };
 
@@ -106,17 +111,56 @@ export default function Games() {
                     {showAll ? "Hide" : "Show all"}
                 </button>
             </div>
+            
             <FastInfo uniqueGames={uniqueGames} gameStats={gameStats} />
-            <div className={styles.cards}>
-                {displayedGames.map((obj, i) => (
-                    <GameCard
-                        gameStats={gameStats}
-                        imageUrl={imageUrlMap[obj.gameName]}
-                        key={obj.id}
-                        {...obj}
+
+            {isLoading ? (
+                <div className={styles.cards}>
+                    <Skeleton
+                        height={200}
+                        width={165}
+                        borderRadius={12}
+                        marginBottom={12}
+                        baseColor="#cccccc07"
+                        highlightColor="#cccccc10"
                     />
-                ))}
-            </div>
+                    <Skeleton
+                        height={200}
+                        width={165}
+                        borderRadius={12}
+                        marginBottom={12}
+                        baseColor="#cccccc07"
+                        highlightColor="#cccccc10"
+                    />
+                    <Skeleton
+                        height={200}
+                        width={165}
+                        borderRadius={12}
+                        marginBottom={12}
+                        baseColor="#cccccc07"
+                        highlightColor="#cccccc10"
+                    />
+                    <Skeleton
+                        height={200}
+                        width={165}
+                        borderRadius={12}
+                        marginBottom={12}
+                        baseColor="#cccccc07"
+                        highlightColor="#cccccc10"
+                    />
+                </div>
+            ) : (
+                <div className={styles.cards}>
+                    {displayedGames.map((obj, i) => (
+                        <GameCard
+                            gameStats={gameStats}
+                            imageUrl={imageUrlMap[obj.gameName]}
+                            key={obj.id}
+                            {...obj}
+                        />
+                    ))}
+                </div>
+            )}
         </div>
     );
 }
