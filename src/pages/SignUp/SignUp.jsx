@@ -26,7 +26,7 @@ export default function SignUp() {
     const register = (e) => {
         e.preventDefault();
         if (password !== confirmPassword) {
-            setError("Passwords do not match");
+            setError("пароли не совпадают");
             return;
         }
         createUserWithEmailAndPassword(auth, email, password)
@@ -45,7 +45,7 @@ export default function SignUp() {
                 });
             })
             .then(() => {
-                console.log("User profile updated and user document created in Firestore");
+                console.log("пользователь создан");
                 setEmail("");
                 setPassword("");
                 setConfirmPassword("");

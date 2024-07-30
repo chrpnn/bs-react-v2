@@ -38,7 +38,7 @@ export default function LogIn() {
             })
             .catch((err) => {
                 console.log(err);
-                setError("Account doesn't exist");
+                setError("Аккаунт не существует");
             });
     };
 
