@@ -12,9 +12,7 @@ export default function Start() {
             <p className={styles.description}>
                 Track your progress and compete with friends
             </p>
-            <MainButton to="/login">
-                Get Started
-            </MainButton>
+            <MainButton to="/login">Get Started</MainButton>
         </div>
     );
 }

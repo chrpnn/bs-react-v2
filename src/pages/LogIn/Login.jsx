@@ -26,8 +26,21 @@ export default function LogIn() {
         console.log(!rememberMe);
     };
 
+    // регулярка для проверки почты
+    const validateEmail = (email) => {
+        const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+        return emailPattern.test(email);
+    };
+
     const logIn = (e) => {
         e.preventDefault();
+
+        // Валидация email
+        if (!validateEmail(email)) {
+            setError("Введите корректный адрес e-mail.");
+            return;
+        }
+
         signInWithEmailAndPassword(auth, email, password)
             .then((user) => {
                 console.log(user);
@@ -38,7 +51,7 @@ export default function LogIn() {
             })
             .catch((err) => {
                 console.log(err);
-                setError("Аккаунт не существует");
+                setError("Неверное имя пользователя или пароль");
             });
     };
 
@@ -48,7 +61,7 @@ export default function LogIn() {
             <div className={styles.loginContainer}>
                 <img className={styles.logo} src={logoImage} alt="Logo" />
                 <div className={styles.loginGroup}>
-                    <h1 className={styles.title}>Log In</h1>
+                    <h1 className={styles.title}>Вход</h1>
                     <form className={styles.inputGroup}>
                         <input
                             type="email"
@@ -59,7 +72,7 @@ export default function LogIn() {
                         />
                         <input
                             type="password"
-                            placeholder="Password"
+                            placeholder="Пароль"
                             className={styles.input}
                             value={password}
                             onChange={(e) => setPassword(e.target.value)}
@@ -75,17 +88,17 @@ export default function LogIn() {
                                 className={styles.hiddenCheckbox}
                             />
                             <span className={styles.customCheckbox}></span>
-                            Remember Me
+                            Запомнить меня
                         </label>
                         <a
                             href="https://www.youtube.com/watch?v=dQw4w9WgXcQ&ab_channel=RickAstley"
                             style={{ color: "#7B61FF" }}
                         >
-                            Forgot Password ?
+                            Забыли пароль?
                         </a>
                     </div>
-                    <MainButton className={styles.loginButton}  onClick={logIn}>
-                        Log In
+                    <MainButton className={styles.loginButton} onClick={logIn}>
+                        Войти
                     </MainButton>
                     {error && <p className={styles.error}>{error}</p>}
                 </div>

@@ -1,16 +1,28 @@
-import React from "react";
+import React, { lazy, Suspense } from "react";
+
 import ReactDOM from "react-dom/client";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 
 import App from "./App";
-import Start from "./pages/Start/Start";
-import Login from "./pages/LogIn/Login";
-import SignUp from "./pages/SignUp/SignUp";
-import Home from "./pages/Home/Home";
-import Friends from "./pages/Friends/Friends";
-import Groups from "./pages/Groups/Groups";
+
+const Start = lazy(() => import("./pages/Start/Start"));
+const Login = lazy(() => import("./pages/LogIn/Login"));
+const SignUp = lazy(() => import("./pages/SignUp/SignUp"));
+const Home = lazy(() => import("./pages/Home/Home"));
+const Friends = lazy(() => import("./pages/Friends/Friends"));
+const Groups = lazy(() => import("./pages/Groups/Groups"));
 
 import { UserProvider } from "./UserContext";
+import DiceLoader from "./components/DiceLoader/DiceLoader";
+
+const loadingStyle: React.CSSProperties = {
+    backgroundColor: "#28333f",
+    height: "100vh",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    color: "#fff",
+};
 
 const router = createBrowserRouter([
     {
@@ -18,34 +30,94 @@ const router = createBrowserRouter([
         element: <App />,
         children: [
             {
-                index: true, 
-                element: <Home />,
+                index: true,
+                element: (
+                    <Suspense 
+                        fallback={
+                            <div style={loadingStyle} >
+                                <DiceLoader />
+                            </div>
+                        }
+                    >
+                        <Home />
+                    </Suspense>
+                ),
             },
             {
                 path: "friends",
-                element: <Friends />,
+                element: (
+                    <Suspense
+                        fallback={
+                            <div style={loadingStyle}>
+                                <DiceLoader />
+                            </div>
+                        }
+                    >
+                        <Friends />
+                    </Suspense>
+                ),
             },
             {
                 path: "groups",
-                element: <Groups />,
+                element: (
+                    <Suspense
+                        fallback={
+                            <div style={loadingStyle}>
+                                <DiceLoader />
+                            </div>
+                        }
+                    >
+                        <Groups />
+                    </Suspense>
+                ),
             },
         ],
     },
     {
         path: "/start",
-        element: <Start />,
+        element: (
+            <Suspense
+                        fallback={
+                            <div style={loadingStyle}>
+                                <DiceLoader />
+                            </div>
+                        }
+                    >
+                <Start />
+            </Suspense>
+        ),
     },
     {
         path: "/login",
-        element: <Login />,
+        element: (
+            <Suspense
+                        fallback={
+                            <div style={loadingStyle}>
+                                <DiceLoader />
+                            </div>
+                        }
+                    >
+                <Login />
+            </Suspense>
+        ),
     },
     {
         path: "/signup",
-        element: <SignUp />,
+        element: (
+            <Suspense
+                        fallback={
+                            <div style={loadingStyle}>
+                                <DiceLoader />
+                            </div>
+                        }
+                    >
+                <SignUp />
+            </Suspense>
+        ),
     },
 ]);
 
-const rootElement = document.getElementById('root');
+const rootElement = document.getElementById("root");
 if (rootElement) {
     const root = ReactDOM.createRoot(rootElement);
     root.render(
@@ -54,6 +126,5 @@ if (rootElement) {
         </UserProvider>
     );
 } else {
-  console.error('Root element not found');
+    console.error("Root element not found");
 }
-

@@ -46,7 +46,22 @@ export default function EditProfileModal({ active, setActive, user }) {
             return;
         }
 
+        // Проверка длины имени и допустимых символов
+        if (newDisplayName.length < 5 || newDisplayName.length > 20) {
+            setError("Имя пользователя должно содержать от 5 до 20 символов.");
+            return;
+        }
+        
+        // регулярка для проверки допустимых символов
+        const nicknamePattern = /^(?![-_])[a-zA-Z0-9-_]{3,20}(?<![-_])$/;
+        if (!nicknamePattern.test(newDisplayName)) {
+            setError("Имя пользователя должно включать только латинские буквы, цифры, дефисы или подчеркивания. Никнейм не должен начинаться или заканчиваться дефисом или подчеркиванием.");
+            return;
+        }
+
         try {
+
+
             // Проверка уникальности имени пользователя
             if (newDisplayName) {
                 const isUnique = await isDisplayNameUnique(newDisplayName);
@@ -96,13 +111,14 @@ export default function EditProfileModal({ active, setActive, user }) {
             >
                 <div className={styles.formGroup}>
                     <h2>Изменить профиль</h2>
-                    <div className={styles.form}>
+                    <form className={styles.form} >
                         <label className={styles.label}>
                             <input
                                 className={styles.input}
                                 type="text"
                                 value={newDisplayName}
                                 onChange={handleNameChange}
+                                placeholder="Новое имя"
                             />
                             <span className={styles.borderText}>Новое имя</span>
                         </label>
@@ -117,10 +133,10 @@ export default function EditProfileModal({ active, setActive, user }) {
                             {fileName && <span className={styles.fileName}>{fileName}</span>}
                         </label>
                         {error && <p className={styles.error}>{error}</p>}
-                        <button className={styles.button} onClick={handleSaveChanges}>
-                            Сохранить изменения
+                        <button className={styles.button} onClick={handleSaveChanges} type="button">
+                            Сохранить
                         </button>
-                    </div>
+                    </form>
                 </div>
             </div>
         </div>
