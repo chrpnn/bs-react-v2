@@ -3,16 +3,18 @@ import { Link, useNavigate } from "react-router-dom";
 
 import MainButton from "../../components/MainButton/MainButton";
 import BackButton from "../../components/BackButton/BackButton";
+import OAuthButton from "../../components/OAuthButton/OAuthButton";
 
 import styles from "./Login.module.scss";
 
 import logoImage from "../../assets/Logo.svg";
-import googleLogo from "../../assets/Google-logo.svg";
-import twitterLogo from "../../assets/Frame.svg";
-import facebookLogo from "../../assets/Facebook-logo.svg";
+import vkLogo from "../../assets/vk-logo.svg";
+import yandexLogo from "../../assets/yandex-logo.svg";
+import telegramLogo from "../../assets/telegram-logo.svg";
 
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { auth } from "../../firebase";
+
 
 export default function LogIn() {
     const [email, setEmail] = React.useState("");
@@ -106,15 +108,9 @@ export default function LogIn() {
                 <div className={styles.socialButtonsGroup}>
                     <p>Or continue with</p>
                     <div className={styles.socialButtonsSubgroup}>
-                        <button className={styles.socialButton}>
-                            <img src={googleLogo} alt="Google" />
-                        </button>{" "}
-                        <button className={styles.socialButton}>
-                            <img src={facebookLogo} alt="Facebook" />
-                        </button>
-                        <button className={styles.socialButton}>
-                            <img src={twitterLogo} alt="Twitter" />
-                        </button>
+                        <OAuthButton src={vkLogo} alt="ВК"/>
+                        <OAuthButton src={yandexLogo} alt="Яндекс"/>
+                        <OAuthButton src={telegramLogo} alt="Телеграм"/>
                     </div>
                 </div>
 

@@ -5,6 +5,7 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom";
 
 import App from "./App";
 
+// задержка для lazy-компонентов
 const Start = lazy(() => import("./pages/Start/Start"));
 const Login = lazy(() => import("./pages/LogIn/Login"));
 const SignUp = lazy(() => import("./pages/SignUp/SignUp"));
@@ -32,9 +33,9 @@ const router = createBrowserRouter([
             {
                 index: true,
                 element: (
-                    <Suspense 
+                    <Suspense
                         fallback={
-                            <div style={loadingStyle} >
+                            <div style={loadingStyle}>
                                 <DiceLoader />
                             </div>
                         }
@@ -77,12 +78,12 @@ const router = createBrowserRouter([
         path: "/start",
         element: (
             <Suspense
-                        fallback={
-                            <div style={loadingStyle}>
-                                <DiceLoader />
-                            </div>
-                        }
-                    >
+                fallback={
+                    <div style={loadingStyle}>
+                        <DiceLoader />
+                    </div>
+                }
+            >
                 <Start />
             </Suspense>
         ),
@@ -91,12 +92,12 @@ const router = createBrowserRouter([
         path: "/login",
         element: (
             <Suspense
-                        fallback={
-                            <div style={loadingStyle}>
-                                <DiceLoader />
-                            </div>
-                        }
-                    >
+                fallback={
+                    <div style={loadingStyle}>
+                        <DiceLoader />
+                    </div>
+                }
+            >
                 <Login />
             </Suspense>
         ),
@@ -105,12 +106,12 @@ const router = createBrowserRouter([
         path: "/signup",
         element: (
             <Suspense
-                        fallback={
-                            <div style={loadingStyle}>
-                                <DiceLoader />
-                            </div>
-                        }
-                    >
+                fallback={
+                    <div style={loadingStyle}>
+                        <DiceLoader />
+                    </div>
+                }
+            >
                 <SignUp />
             </Suspense>
         ),
