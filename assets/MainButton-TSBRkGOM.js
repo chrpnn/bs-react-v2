@@ -1,0 +1,1 @@
+import{u as r,j as i}from"./index-P98SA6Id.js";const u="_root_1a1az_1",c={root:u};function l({to:t,children:a,onClick:o}){const n=r(),e=s=>{o&&o(s),t&&!s.defaultPrevented&&n(t)};return i.jsx("button",{className:c.root,onClick:e,children:a})}export{l as M};
