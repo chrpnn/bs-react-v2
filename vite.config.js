@@ -10,6 +10,6 @@ export default defineConfig({
             'text/jsx': ['jsx'],
             'text/tsx': ['tsx']
         }
-    }
-    // base: '/bs-react-v2/'
+    },
+    // base: '/bs-react-v2/',
 });
