@@ -1,22 +1,22 @@
 import React from "react";
-import { updateProfile } from "firebase/auth";
-import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
-import { db } from "../../firebase"; // Импорт Firestore
-import {
-    doc,
-    getDocs,
-    collection,
-    query,
-    where,
-    updateDoc,
-} from "firebase/firestore";
+import { supabase } from "../../utils/supabaseClient";
+
+// import { updateProfile } from "firebase/auth";
+// import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
+// import { db } from "../../firebase";
+// import {
+//     doc,
+//     getDocs,
+//     collection,
+//     query,
+//     where,
+//     updateDoc,
+// } from "firebase/firestore";
 
 import styles from "./EditProfileModal.module.scss";
 
 export default function EditProfileModal({ active, setActive, user }) {
-    const [newDisplayName, setNewDisplayName] = React.useState(
-        user?.displayName || ""
-    );
+    const [newDisplayName, setNewDisplayName] = React.useState(user?.user_metadata?.name || "");
     const [newAvatar, setNewAvatar] = React.useState(null);
     const [error, setError] = React.useState("");
     const [fileName, setFileName] = React.useState("");
@@ -29,15 +29,17 @@ export default function EditProfileModal({ active, setActive, user }) {
         const file = e.target.files[0];
         if (file) {
             setNewAvatar(file);
-            setFileName(file.name); // Обновление состояния с именем файла
+            setFileName(file.name);
         }
     };
 
     const isDisplayNameUnique = async (displayName) => {
-        const usersRef = collection(db, "users");
-        const q = query(usersRef, where("name", "==", displayName));
-        const querySnapshot = await getDocs(q);
-        return querySnapshot.empty;
+        const { data, error } = await supabase
+            .from('users')
+            .select('id')
+            .eq('name', displayName);
+
+        return data.length === 0;
     };
 
     const handleSaveChanges = async () => {
@@ -60,37 +62,65 @@ export default function EditProfileModal({ active, setActive, user }) {
         }
 
         try {
-
-
             // Проверка уникальности имени пользователя
-            if (newDisplayName) {
-                const isUnique = await isDisplayNameUnique(newDisplayName);
-                if (!isUnique) {
-                    setError("Имя пользователя уже занято");
+            const isUnique = await isDisplayNameUnique(newDisplayName);
+            if (!isUnique) {
+                setError("Имя пользователя уже занято");
+                return;
+            }
+
+            const updates = {
+                user_metadata: {
+                    name: newDisplayName,
+                },
+            };
+
+            // Если есть новый аватар, загружаем его в хранилище Supabase
+            if (newAvatar) {
+
+                console.log("Начало загрузки аватара для пользователя:", user.user_metadata.name);
+                console.log("Имя файла аватара:", newAvatar.name);
+
+                const { data, error: uploadError } = await supabase
+                    .storage
+                    .from('avatar_image') // Указание правильного названия bucket
+                    .upload(`avatars/${user.id}`, newAvatar, {
+                        upsert: true, // перезаписать файл, если он уже существует
+                    });
+
+                if (uploadError) {
+                    console.error("Ошибка при загрузке аватара:", uploadError.message);
+                    setError("Ошибка при загрузке аватара");
                     return;
                 }
+
+                const avatarURL = supabase.storage.from('avatar_image').getPublicUrl(data.path).publicURL;
+
+                updates.user_metadata.photoURL = avatarURL;
             }
 
-            const updates = {};
-            if (newDisplayName) {
-                updates.displayName = newDisplayName;
-            }
-            if (newAvatar) {
-                const storage = getStorage();
-                const avatarRef = ref(storage, `avatars/${user.uid}`);
-                await uploadBytes(avatarRef, newAvatar);
-                const avatarURL = await getDownloadURL(avatarRef);
-                updates.photoURL = avatarURL;
+            // Обновление профиля пользователя
+            const { error: updateError } = await supabase.auth.updateUser(updates);
+
+            if (updateError) {
+                console.error("Ошибка при обновлении профиля:", updateError.message);
+                setError("Ошибка при обновлении профиля");
+                return;
             }
 
-            if (Object.keys(updates).length > 0) {
-                await updateProfile(user, updates);
-                // Обновление документа пользователя в Firestore
-                const userDocRef = doc(db, "users", user.uid);
-                await updateDoc(userDocRef, {
-                    name: newDisplayName || user.displayName,
-                    ...(newAvatar && { avatarURL: updates.photoURL }),
-                });
+            // Обновление информации о пользователе в таблице `users`
+            const { error: updateTableError } = await supabase
+                .from('users')
+                .update({
+                    name: newDisplayName,
+                    ...(newAvatar && { avatarURL: updates.user_metadata.photoURL }),
+                })
+                .eq('id', user.id);
+
+            if (updateTableError) {
+                console.error("Ошибка при обновлении данных в таблице users:", updateTableError.message);
+                setError("Ошибка при обновлении данных");
+                return;
             }
 
             setActive(false);
@@ -111,7 +141,7 @@ export default function EditProfileModal({ active, setActive, user }) {
             >
                 <div className={styles.formGroup}>
                     <h2>Изменить профиль</h2>
-                    <form className={styles.form} >
+                    <form className={styles.form}>
                         <label className={styles.label}>
                             <input
                                 className={styles.input}
@@ -133,7 +163,11 @@ export default function EditProfileModal({ active, setActive, user }) {
                             {fileName && <span className={styles.fileName}>{fileName}</span>}
                         </label>
                         {error && <p className={styles.error}>{error}</p>}
-                        <button className={styles.button} onClick={handleSaveChanges} type="button">
+                        <button
+                            className={styles.button}
+                            onClick={handleSaveChanges}
+                            type="button"
+                        >
                             Сохранить
                         </button>
                     </form>

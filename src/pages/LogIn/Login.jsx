@@ -12,9 +12,10 @@ import vkLogo from "../../assets/vk-logo.svg";
 import yandexLogo from "../../assets/yandex-logo.svg";
 import telegramLogo from "../../assets/telegram-logo.svg";
 
-import { signInWithEmailAndPassword } from "firebase/auth";
-import { auth } from "../../firebase";
+import { supabase } from "../../utils/supabaseClient";
 
+// import { signInWithEmailAndPassword } from "firebase/auth";
+// import { auth } from "../../firebase";
 
 export default function LogIn() {
     const [email, setEmail] = React.useState("");
@@ -34,7 +35,7 @@ export default function LogIn() {
         return emailPattern.test(email);
     };
 
-    const logIn = (e) => {
+    const logIn = async (e) => {
         e.preventDefault();
 
         // Валидация email
@@ -43,18 +44,27 @@ export default function LogIn() {
             return;
         }
 
-        signInWithEmailAndPassword(auth, email, password)
-            .then((user) => {
-                console.log(user);
-                setEmail("");
-                setPassword("");
-                setError("");
-                navigate("/");
-            })
-            .catch((err) => {
-                console.log(err);
-                setError("Неверное имя пользователя или пароль");
+        try {
+            const { data, error } = await supabase.auth.signInWithPassword({
+                email,
+                password,
             });
+
+            if (error) {
+                console.log(error);
+                setError("Неверное имя пользователя или пароль");
+                return;
+            }
+
+            console.log(data);
+            setEmail("");
+            setPassword("");
+            setError("");
+            navigate("/");
+        } catch (err) {
+            console.error(err);
+            setError("Произошла ошибка при входе");
+        }
     };
 
     return (
@@ -108,9 +118,9 @@ export default function LogIn() {
                 <div className={styles.socialButtonsGroup}>
                     <p>Or continue with</p>
                     <div className={styles.socialButtonsSubgroup}>
-                        <OAuthButton src={vkLogo} alt="ВК"/>
-                        <OAuthButton src={yandexLogo} alt="Яндекс"/>
-                        <OAuthButton src={telegramLogo} alt="Телеграм"/>
+                        <OAuthButton src={vkLogo} alt="ВК" />
+                        <OAuthButton src={yandexLogo} alt="Яндекс" />
+                        <OAuthButton src={telegramLogo} alt="Телеграм" />
                     </div>
                 </div>
 

@@ -2,8 +2,10 @@ import React, { useEffect, useState } from "react";
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
 import { useNavigate } from "react-router-dom";
-import { signOut } from "firebase/auth";
-import { auth } from "../../firebase";
+import { supabase } from "../../utils/supabaseClient";
+
+// import { signOut } from "firebase/auth";
+// import { auth } from "../../firebase";
 
 import styles from "./Header.module.scss";
 
@@ -21,15 +23,17 @@ export default function Header() {
   useEffect(() => {
     if (user) {
       setIsLoading(false);
+      console.log("user", user);
     }
   }, [user]);
 
   const handleLogout = async () => {
     try {
-      await signOut(auth);
+      const { error } = await supabase.auth.signOut();
+      if (error) throw error;
       navigate("/start");
     } catch (error) {
-      console.error("Ошибка при выходе:", error);
+      console.error("Ошибка при выходе:", error.message);
     }
   };
 
@@ -50,7 +54,7 @@ export default function Header() {
               highlightColor="#cccccc50"
             />
           ) : (
-            <img src={user?.photoURL || avatar} alt="avatar" />
+            <img src={user?.user_metadata?.avatar_url || avatar} alt="avatar" />
           )}
           <p>
             Привет!
@@ -62,7 +66,7 @@ export default function Header() {
                 highlightColor="#cccccc50"
               />
             ) : user ? (
-              user.displayName
+              user.user_metadata?.name || user.email
             ) : (
               "Guest"
             )}

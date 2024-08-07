@@ -78,6 +78,8 @@
     border: 1px solid $border-color;
     border-radius: 12px;
     cursor: pointer;
+    // overflow: hidden; // скрывает все что выходит за зону контейнера
+    // text-overflow: ellipsis; 
 
     &:focus-within {
         border: 1px solid $accent-color;
@@ -104,7 +106,9 @@
     margin-left: 10px;
     color: $text-second-color;
     font-size: 14px;
-    line-height: 50px; /* align with the height of the label */
+    line-height: 50px;
+    overflow: hidden; // скрывает все что выходит за зону контейнера
+    text-overflow: ellipsis; 
 }
 
 .fileInput:focus + .borderText {
