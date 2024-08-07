@@ -70,7 +70,7 @@ export default function EditProfileModal({ active, setActive, user }) {
             }
 
             const updates = {
-                user_metadata: {
+                data: {
                     name: newDisplayName,
                 },
             };
@@ -101,7 +101,7 @@ export default function EditProfileModal({ active, setActive, user }) {
 
             // Обновление профиля пользователя
             const { error: updateError } = await supabase.auth.updateUser(updates);
-
+            console.log(updates)
             if (updateError) {
                 console.error("Ошибка при обновлении профиля:", updateError.message);
                 setError("Ошибка при обновлении профиля");
