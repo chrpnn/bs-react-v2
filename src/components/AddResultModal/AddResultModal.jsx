@@ -1,79 +1,68 @@
 import React from "react";
-import {
-    getFirestore,
-    collection,
-    doc,
-    getDocs,
-    addDoc,
-} from "firebase/firestore";
 import { useAuth } from "../../hooks/useAuth";
+import { fetchGames, addGameResult } from "../../utils/gameService";
 
 import styles from "./AddResultModal.module.scss";
+import { connectStorageEmulator } from "firebase/storage";
 
 export default function AddResultModal({ active, setActive }) {
     const [gameName, setGameName] = React.useState("");
     const [date, setDate] = React.useState("");
     const [status, setStatus] = React.useState("win");
     const [boardgames, setBoardgames] = React.useState([]);
-    const [selectedGame, setSelectedGame] = React.useState(""); // Выбранная игра// Список игр, загружаемый с сервера
+    const [selectedGame, setSelectedGame] = React.useState(""); // Выбранная игра
 
-    const db = getFirestore(); // Инициализация Firestore
-    const user = useAuth(); // Получение текущего пользователя
+    const user = useAuth();
+    
 
     // Используем useEffect для загрузки списка игр с сервера при монтировании компонента
     React.useEffect(() => {
-        const fetchGames = async () => {
-            try {
-                // Получение документов из коллекции "boardgames"
-                const querySnapshot = await getDocs(collection(db, "boardgames"));
-                // Маппинг документов в массив объектов
-                const gamesList = querySnapshot.docs.map((doc) => ({
-                    id: doc.id,
-                    ...doc.data(),
-                }));
-                setBoardgames(gamesList); // Установка списка игр в локальное состояние
-            } catch (error) {
-                console.error("Error fetching games:", error);
-            }
+        const loadGames = async () => {
+            
+            const gamesList = await fetchGames(); // Получаем список игр
+            console.log('список игр:', gamesList);
+            setBoardgames(gamesList); // Устанавливаем их в состояние
+            
         };
 
-        fetchGames();
-    }, [db]); // Зависимость - db, чтобы эффект выполнялся только при изменении db
-
+        loadGames();
+    }, []);
+    
     // Функция для добавления результата игры
     const handleAddGame = async () => {
-        if (!selectedGame || !selectedGame.name) {
+        if (!selectedGame || !selectedGame.boardgameName) {
             alert("Please select a game."); // Проверка на выбор игры
             return;
         }
 
         const newGameResult = {
-            gameName: selectedGame.name, // Имя выбранной игры
+            gameName: selectedGame.boardgameName, // Имя выбранной игры
             date, // Дата
             status, // Статус (победа или поражение)
             createdAt: new Date(), // Время создания
         };
 
-        try {
-            await addDoc(collection(db, `users/${user.uid}/games`), newGameResult);
+
+        console.log(user.id);
+        console.log(newGameResult);
+        const success = await addGameResult(user.id, newGameResult); // Добавляем результат игры
+
+        if (success) {
             setActive(false); // Закрытие модального окна
-            console.log("Document written");
             setGameName(""); // Сброс полей формы
             setDate("");
             setStatus("win");
-        } catch (error) {
-            console.error("Error adding game result:", error);
         }
     };
 
     // Обработчик изменения выбора игры
     const handleGameChange = (e) => {
         const name = e.target.value;
-        console.log(name);
-        const game = boardgames.find((g) => g.name === name);
+        const game = boardgames.find((g) => g.boardgameName === name);
         setSelectedGame(game); // Установка объекта выбранной игры
     };
 
+    
     return (
         <div
             className={active ? `${styles.root} ${styles.active}` : styles.root}
@@ -94,8 +83,8 @@ export default function AddResultModal({ active, setActive }) {
                             >
                                 <option value="">Выбери игру</option>
                                 {boardgames.map((game) => (
-                                    <option key={game.id} value={game.name}>
-                                        {game.name.toUpperCase()}
+                                    <option key={game.id} value={game.boardgameName}>
+                                        {game.boardgameName.toUpperCase()}
                                     </option>
                                 ))}
                             </select>

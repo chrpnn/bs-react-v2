@@ -1,11 +1,5 @@
 import React from "react";
-import {
-    getFirestore,
-    collection,
-    query,
-    where,
-    onSnapshot,
-} from "firebase/firestore";
+import { supabase } from "../../utils/supabaseClient";
 import { useAuth } from "../../hooks/useAuth";
 import GameResult from "../GameResult/GameResult";
 import Search from "../Search/Search";
@@ -27,40 +21,39 @@ export default function History({ setGameCount, setPercentWinsCount }) {
     }, [games]);
 
     React.useEffect(() => {
-        const db = getFirestore();
+        if (!user) return; // Ждем, пока будет доступен пользователь
 
         const fetchGames = async () => {
-            if (!user) return; // Ждем, пока будет доступен пользователь
-
+            setIsLoading(true);
             try {
-                const userGamesRef = collection(db, `users/${user.uid}/games`);
-                const q = searchValue.toLowerCase()
-                    ? query(
-                        userGamesRef,
-                        where("gameName", ">=", searchValue.toLowerCase()),
-                        where("gameName", "<=", searchValue.toLowerCase() + "\uf8ff")
-                    )
-                    : userGamesRef;
-                console.log("ищем", q);
+                // Запрашиваем данные из Supabase
+                const { data, error } = await supabase
+                    .from(`users/${user.id}/games`)
+                    .select("*")
+                    .ilike("gameName", `%${searchValue}%`); // Пример поиска
 
-                // Используем onSnapshot для получения данных в реальном времени
-                const unsubscribe = onSnapshot(q, (querySnapshot) => {
-                    const arr = querySnapshot.docs.map((doc) => ({
-                        id: doc.id,
-                        ...doc.data(),
-                    }));
+                if (error) throw error;
 
-                    setGames(arr);
-                    setGameCount(arr.length);
-                    setPercentWinsCount(
-                        (arr.filter((item) => item.status === "win").length / arr.length) *
-                        100
-                    );
-                    setIsLoading(false);
-                });
+                setGames(data);
+                setGameCount(data.length);
+                setPercentWinsCount(
+                    (data.filter((item) => item.status === "win").length / data.length) * 100
+                );
+                setIsLoading(false);
 
-                // Возвращаем функцию отписки, чтобы отписаться от потока данных при размонтировании компонента
-                return () => unsubscribe();
+                // Подписываемся на обновления
+                const subscription = supabase
+                    .from(`users/${user.id}/games`)
+                    .on('*', (payload) => {
+                        console.log('Change received!', payload);
+                        fetchGames(); // Обновляем данные при изменении
+                    })
+                    .subscribe();
+
+                // Отписка при размонтировании компонента
+                return () => {
+                    supabase.removeSubscription(subscription);
+                };
             } catch (error) {
                 console.error("Error fetching the games data:", error);
                 setIsLoading(false);

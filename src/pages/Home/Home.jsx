@@ -35,11 +35,11 @@ export default function Home({ }) {
                 <AddResultModal active={modalActive} setActive={setModalActive} />
             </div>
             <div className={styles.main}>
-                <History
+                {/* <History
                     setGameCount={setGameCount}
                     setPercentWinsCount={setPercentWinsCount}
-                />
-                <Games />
+                /> */}
+                {/* <Games /> */}
             </div>
             <Footer />
         </div>
