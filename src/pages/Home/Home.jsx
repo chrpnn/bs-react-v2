@@ -5,6 +5,7 @@ import AddGameButton from "../../components/AddGameButton/AddGameButton";
 import AddResultModal from "../../components/AddResultModal/AddResultModal";
 import Games from "../../components/Games/Games";
 import Footer from "../../components/Footer/Footer";
+import ProductCard from "../../components/ProductCard/ProductCard";
 
 import styles from "./Home.module.scss";
 
@@ -35,10 +36,17 @@ export default function Home({ }) {
                 <AddResultModal active={modalActive} setActive={setModalActive} />
             </div>
             <div className={styles.main}>
-                {/* <History
+                <History
                     setGameCount={setGameCount}
                     setPercentWinsCount={setPercentWinsCount}
-                /> */}
+                />
+
+                {/* темп ниже, не удалять*/}
+                <div style={{ display: "flex", gap: "20px", padding: "0 15px" }}>
+                    <ProductCard />
+                    <ProductCard />
+                </div>
+                
                 {/* <Games /> */}
             </div>
             <Footer />

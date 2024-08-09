@@ -20,7 +20,7 @@ export const signUpUser = async (email, password, name) => {
     // Добавление данных о пользователе в таблицу users
     const { user } = data;
     const { error: insertError } = await supabase
-        .from('users')
+        .from('player')
         .insert([{ id: user.id, email, name }]);
 
     if (insertError) {

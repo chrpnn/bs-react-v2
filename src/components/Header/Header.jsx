@@ -4,9 +4,6 @@ import "react-loading-skeleton/dist/skeleton.css";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "../../utils/supabaseClient";
 
-// import { signOut } from "firebase/auth";
-// import { auth } from "../../firebase";
-
 import styles from "./Header.module.scss";
 
 import avatar from "../../assets/Default.jpg";
@@ -20,11 +17,14 @@ export default function Header() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
 
+  console.log("user", user);
+
   useEffect(() => {
     if (user) {
       setIsLoading(false);
       console.log("user", user);
     }
+    console.log("user", user);
   }, [user]);
 
   const handleLogout = async () => {

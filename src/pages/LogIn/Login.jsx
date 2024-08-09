@@ -14,9 +14,6 @@ import telegramLogo from "../../assets/telegram-logo.svg";
 
 import { supabase } from "../../utils/supabaseClient";
 
-// import { signInWithEmailAndPassword } from "firebase/auth";
-// import { auth } from "../../firebase";
-
 export default function LogIn() {
     const [email, setEmail] = React.useState("");
     const [password, setPassword] = React.useState("");

@@ -1,18 +1,6 @@
 import React from "react";
 import { supabase } from "../../utils/supabaseClient";
 
-// import { updateProfile } from "firebase/auth";
-// import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
-// import { db } from "../../firebase";
-// import {
-//     doc,
-//     getDocs,
-//     collection,
-//     query,
-//     where,
-//     updateDoc,
-// } from "firebase/firestore";
-
 import styles from "./EditProfileModal.module.scss";
 
 export default function EditProfileModal({ active, setActive, user }) {
@@ -35,7 +23,7 @@ export default function EditProfileModal({ active, setActive, user }) {
 
     const isDisplayNameUnique = async (displayName) => {
         const { data, error } = await supabase
-            .from('users')
+            .from('player')
             .select('id')
             .eq('name', displayName);
 

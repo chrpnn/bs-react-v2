@@ -12,11 +12,6 @@ import googleLogo from "../../assets/Google-logo.svg";
 import twitterLogo from "../../assets/Frame.svg";
 import facebookLogo from "../../assets/Facebook-logo.svg";
 
-// FIREBASE AUTH
-// import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
-// import { auth, db } from "../../firebase";
-// import { collection, doc, setDoc } from "firebase/firestore";
-
 export default function SignUp() {
     const [email, setEmail] = React.useState("");
     const [nickname, setNickname] = React.useState("");
@@ -53,37 +48,7 @@ export default function SignUp() {
         } catch (err) {
             console.error(err.message);
             setError(err.message);
-        }
-
-        // FIREBASE AUTH
-        // createUserWithEmailAndPassword(auth, email, password)
-        //     .then((userCredential) => {
-        //         const user = userCredential.user;
-        //         return updateProfile(user, {
-        //             displayName: nickname,
-        //         }).then(() => user);
-        //     })
-        //     .then((user) => {
-        //         // Добавление документа пользователя в Firestore
-        //         const userDocRef = doc(collection(db, "users"), user.uid);
-        //         return setDoc(userDocRef, {
-        //             name: nickname,
-        //             email: email
-        //         });
-        //     })
-        //     .then(() => {
-        //         console.log("пользователь создан");
-        //         setEmail("");
-        //         setPassword("");
-        //         setConfirmPassword("");
-        //         setError("");
-        //         setNickname("");
-        //         navigate("/");
-        //     })
-        //     .catch((err) => {
-        //         console.error(err);
-        //         setError(err.message);
-        //     });
+        }        
     };
 
     return (
