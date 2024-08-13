@@ -8,10 +8,11 @@ import Footer from "../../components/Footer/Footer";
 import ProductCard from "../../components/ProductCard/ProductCard";
 
 import styles from "./Home.module.scss";
-
+import FastInfo from "../../components/FastInfo/FastInfo";
+import AddResultDrawer from "../../components/AddResultDrawer/AddResultDrawer";
 
 export default function Home({ }) {
-    const [modalActive, setModalActive] = React.useState(false);
+    const [modalActive, setModalActive] = React.useState(true);
 
     const [gameCount, setGameCount] = React.useState(0);
     const [percentWinsCount, setPercentWinsCount] = React.useState(0);
@@ -22,19 +23,23 @@ export default function Home({ }) {
         <div className={styles.root}>
             <div className={styles.topInfo}>
                 <Header />
+
                 <div className={styles.topInfoResult}>
                     <div className={styles.total}>
                         <p className={styles.counter}>{gameCount}</p>
-                        <p className={styles.describe}>total games</p>
+                        <p className={styles.describe}>Сыграно<br />партий</p>
                     </div>
                     <div className={styles.total}>
                         <p className={styles.counter}>{roundetPercentWinsCount} %</p>
-                        <p className={styles.describe}>percent wins</p>
+                        <p className={styles.describe}>Процент<br />побед</p>
                     </div>
+                    <AddGameButton setModalActive={setModalActive} />
                 </div>
-                <AddGameButton setModalActive={setModalActive} />
-                <AddResultModal active={modalActive} setActive={setModalActive} />
             </div>
+
+            {/* <AddResultModal active={modalActive} setActive={setModalActive} /> */}
+            <AddResultDrawer active={modalActive} setActive={setModalActive} />
+
             <div className={styles.main}>
                 <History
                     setGameCount={setGameCount}
@@ -46,10 +51,10 @@ export default function Home({ }) {
                     <ProductCard />
                     <ProductCard />
                 </div>
-                
+
                 {/* <Games /> */}
             </div>
-            <Footer />
+            {/* <Footer /> */}
         </div>
     );
 }

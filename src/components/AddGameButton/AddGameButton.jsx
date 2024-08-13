@@ -8,7 +8,8 @@ export default function AddGameButton({ setModalActive }) {
     return (
     <div className={styles.root} onClick={() => setModalActive(true)}>
         <img src={AddLogo} alt="add button" />
-        <p>Add result</p>
+        <p>Добавить<br />результат</p>
+        
     </div>
     )
 }

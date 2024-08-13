@@ -68,12 +68,12 @@ export default function History({ setGameCount, setPercentWinsCount }) {
     return (
         <div className={styles.root}>
             <div className={styles.titleGroup}>
-                <h2>History</h2>
+                <h2>История</h2>
                 <button
                     className={styles.toggleShowAll}
                     onClick={() => setShowAll(!showAll)}
                 >
-                    {showAll ? "Hide" : "Show all"}
+                    {showAll ? "Скрыть" : "Показать >"}
                 </button>
             </div>
 
