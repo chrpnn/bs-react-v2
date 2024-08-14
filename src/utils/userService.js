@@ -32,3 +32,5 @@ export const signUpUser = async (email, password, name) => {
     return data;
 };
 
+
+

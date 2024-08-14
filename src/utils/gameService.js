@@ -4,7 +4,7 @@ import { supabase } from "./supabaseClient";
 export const fetchGames = async () => {
     try {
         // Получение документов из коллекции "boardgames"
-        const { data, error } = await supabase.from("boardgames").select("*");
+        const { data, error } = await supabase.from("game").select("*");
         if (error) throw error;
         return data;
     } catch (error) {
@@ -14,39 +14,52 @@ export const fetchGames = async () => {
 };
 
 // Функция для добавления нового результата игры
-export const addGameResult = async (userId, newGameResult) => {
+export const addGameResult = async (playerId, gameId, gameResult) => {
     try {
-        // Сначала получаем текущие игры пользователя
-        const { data: userGames, error: fetchError } = await supabase
-            .from("users")
-            .select("playedGames")
-            .eq("id", userId)
-            .single();
-        // single() - этот метод указывает, что мы ожидаем получить одну единственную запись
-        console.log(userGames);
-        console.log(newGameResult);
+        // Добавляем новую запись в таблицу PlayerMatch
+        const { data, error } = await supabase.from("playerMatch").insert({
+            id_player: playerId, // Ссылка на игрока
+            id_game: gameId, // Ссылка на игру
+            game_name: gameResult.gameName, // Название игры
+            date: gameResult.date, // Дата записи результата
+            result: gameResult.result, // Результат игры для данного игрока
+        });
 
-        if (fetchError) throw fetchError;
-        
-        // Обновляем массив игр новым результатом
-        const updatedGames = userGames?.playedGames
-            ? [...userGames.playedGames, newGameResult]
-            : [newGameResult];
-        // [...] (оператор расширения) — разворачивает (распаковывает) элементы массива в новый массив.
-        // создается новый массив, который включает все элементы из массива userGames.games и добавляет в конец элемент newGameResult.
-
-        // Обновляем запись пользователя в базе данных
-        const { error: updateError } = await supabase
-            .from("users")
-            .update({ playedGames: updatedGames })
-            .eq("id", userId);
-        // Результат выполнения запроса деструктурируется, и если произошла ошибка, она сохраняется в переменную updateError
-
-        if (updateError) throw updateError;
+        if (error) throw error;
 
         return true;
     } catch (error) {
         console.error("Error adding game result:", error);
         return false;
+    }
+};
+
+// Функция для получения количества записей в таблице playerMatch (подсчет сыгранных матчей для игрока)
+export const getPlayerMatchCount = async () => {
+    try {
+        // Получаем общее количество матчей
+        const { count: totalCount, error: totalCountError } = await supabase
+            .from("playerMatch")
+            .select("*", { count: "exact" });
+
+        if (totalCountError) {
+            throw totalCountError;
+        }
+
+        // Получаем количество побед
+        const { count: winCount, error: winCountError } = await supabase
+            .from("playerMatch")
+            .select("*", { count: "exact" })
+            .eq("result", "win");
+
+        if (winCountError) {
+            throw winCountError;
+        }
+
+        console.log({ totalCount, winCount });
+        return { totalCount, winCount };
+    } catch (error) {
+        console.error("Error fetching game stats:", error);
+        throw error;
     }
 };
