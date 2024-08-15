@@ -14,11 +14,9 @@
         flex-direction: column;
         justify-content: center;
         align-items: center; 
-        height: 90px;
-        border: 1px solid rgba(255, 255, 255, 0.035);
+        height: 90px;        
         border-radius: 12px;
-        background-color: rgba(47, 60, 80, 0.4);
-
+        background-color: $primary-color;
 
         img {
             width: 35px;
@@ -29,13 +27,15 @@
 
         p {
             font-size: 10px;
-            color: $description-color;
+            color: $text-second-color;
             letter-spacing: 0.2px;
             font-weight: 400;
         }
 
         .title {
-            color: $accent-color;
+            font-size: 14px;
+            font-weight: 600;
+            color: #404040;
         }
     }
 }

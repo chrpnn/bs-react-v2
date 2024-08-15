@@ -10,7 +10,6 @@ import ProductCard from "../../components/ProductCard/ProductCard";
 import { getPlayerMatchCount } from "../../utils/gameService";
 
 import styles from "./Home.module.scss";
-import FastInfo from "../../components/FastInfo/FastInfo";
 import AddResultDrawer from "../../components/AddResultDrawer/AddResultDrawer";
 
 export default function Home({ }) {
@@ -64,18 +63,15 @@ export default function Home({ }) {
             <AddResultDrawer active={modalActive} setActive={setModalActive} />
 
             <div className={styles.main}>
-                <History
-                // setGameCount={setGameCount}
-                // setPercentWinsCount={setPercentWinsCount}
-                />
+                <History />
 
                 {/* темп ниже, не удалять*/}
-                <div style={{ display: "flex", gap: "20px", padding: "0 15px" }}>
+                {/* <div style={{ display: "flex", gap: "20px", padding: "0 15px" }}>
                     <ProductCard />
                     <ProductCard />
-                </div>
+                </div> */}
 
-                {/* <Games /> */}
+                <Games />
             </div>
             {/* <Footer /> */}
         </div>

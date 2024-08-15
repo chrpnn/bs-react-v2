@@ -1,11 +1,4 @@
-$header-color: #393762;
-$description-color: #ccc;
-$background-color: #28333f;
-$input-color: #2f3c50;
-$text-color: #fff;
-$accent-color: #7b61ff;
-$devider-color: #4b576b;
-$border-color: #4b576b;
+@import "../../variables.scss";
 
 .root {
     .gameContainer {
@@ -13,31 +6,32 @@ $border-color: #4b576b;
         display: flex;
         justify-content: space-between;
         align-items: center;
-        border: 1px solid #ffffff09;
-        background-color: #2f3c5061;
+        border: none;
+        background-color: $primary-color;
         min-height: 72px;
         min-width: 163px;
         border-radius: 12px;
         padding: 15px;
 
         .gameName {
-            font-size: 12px;
-            color: #CDCDCD;
+            font-size: 14px;
+            font-weight: 600;
+            color: $text-color;
         }
 
         .gameDate {
             font-size: 14px;
-            color: $accent-color;
+            color: $text-second-color;
             text-transform: lowercase;
         }
 
         .gameStatus {
             font-family: "Bebas Neue", sans-serif;
-            font-weight: 400;
+            font-weight: 500;
             font-style: normal;
             font-size: 24px;
             letter-spacing: 1px;
-            color: $text-color;
+            color: $accent-color;
         }
     }
 

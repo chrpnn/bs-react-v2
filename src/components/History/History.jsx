@@ -8,7 +8,7 @@ import "react-loading-skeleton/dist/skeleton.css";
 
 import styles from "./History.module.scss";
 
-export default function History({ setGameCount, setPercentWinsCount }) {
+export default function History() {
     const [games, setGames] = React.useState([]);
     const [searchValue, setSearchValue] = React.useState("");
     const [showAll, setShowAll] = React.useState(false);
@@ -28,22 +28,20 @@ export default function History({ setGameCount, setPercentWinsCount }) {
             try {
                 // Запрашиваем данные из Supabase
                 const { data, error } = await supabase
-                    .from(`users/${user.id}/games`)
+                    .from("playerMatch")
                     .select("*")
-                    .ilike("gameName", `%${searchValue}%`); // Пример поиска
+                    .eq("id_player", user.id) // Фильтр по id текущего пользователя
+                    .ilike("game_name", `%${searchValue}%`); // Поиск по имени игры
 
+                console.log(data);
                 if (error) throw error;
 
                 setGames(data);
-                setGameCount(data.length);
-                setPercentWinsCount(
-                    (data.filter((item) => item.status === "win").length / data.length) * 100
-                );
                 setIsLoading(false);
 
                 // Подписываемся на обновления
                 const subscription = supabase
-                    .from(`users/${user.id}/games`)
+                    .from(`playerMatch:id_player=eq.${user.id}`)
                     .on('*', (payload) => {
                         console.log('Change received!', payload);
                         fetchGames(); // Обновляем данные при изменении
@@ -61,23 +59,30 @@ export default function History({ setGameCount, setPercentWinsCount }) {
         };
 
         fetchGames();
-    }, [user, searchValue, setGameCount, setPercentWinsCount]);
+    }, [user, searchValue]);
 
     const displayedGames = showAll ? sortedGames : sortedGames.slice(0, 3);
+    console.log(displayedGames);
 
     return (
         <div className={styles.root}>
-            <div className={styles.titleGroup}>
-                <h2>История</h2>
-                <button
-                    className={styles.toggleShowAll}
-                    onClick={() => setShowAll(!showAll)}
-                >
-                    {showAll ? "Скрыть" : "Показать >"}
-                </button>
-            </div>
+            <div className={styles.sticky}>
 
-            <Search searchValue={searchValue} setSearchValue={setSearchValue} />
+                <div className={styles.titleGroup}>
+                    <h2>История</h2>
+                    <button
+                        className={styles.toggleShowAll}
+                        onClick={() => setShowAll(!showAll)}
+                    >
+                        {showAll ? "Скрыть" : "Показать >"}
+                    </button>
+                </div>
+
+                <Search searchValue={searchValue} setSearchValue={setSearchValue} />
+
+
+            </div>
+            
 
             {isLoading ? (
                 <div className={styles.container}>

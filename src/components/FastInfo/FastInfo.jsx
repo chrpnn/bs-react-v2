@@ -41,22 +41,24 @@ export default function FastInfo({ uniqueGames, gameStats }) {
     const { maxCount, maxObject } = findMaxObject(uniqueGames);
     const { maxWinGame, minWinGame } = findMaxMinWinPercentage(gameStats);
 
+    console.log(uniqueGames);
+
     return (
         <div className={styles.root}>
             <div className={styles.infoBlock}>
                 <img src={PopLogo} alt="Popular" />
-                <p className={styles.title}>{maxObject && maxObject.gameName ? maxObject.gameName.toUpperCase() : "Untitled"}</p>
+                <p className={styles.title}>{maxObject && maxObject.game_name ? maxObject.game_name.toUpperCase() : "Untitled"}</p>
                 <p>Партий всего: {maxCount}</p>
 
             </div>
             <div className={styles.infoBlock}>
                 <img src={SmileLogo} alt="Smile" />
-                <p className={styles.title}>{maxWinGame && maxWinGame.gameName ? maxWinGame.gameName.toUpperCase() : "Untitled"}</p>
+                <p className={styles.title}>{maxWinGame && maxWinGame.game_name ? maxWinGame.game_name.toUpperCase() : "Untitled"}</p>
                 <p>Побед: {maxWinGame ? maxWinGame.winPercentage.toFixed(1) : 0} %</p>
             </div>
             <div className={styles.infoBlock}>
                 <img src={SadLogo} alt="Sad" />
-                <p className={styles.title}>{minWinGame && minWinGame.gameName ? minWinGame.gameName.toUpperCase() : "Untitled"}</p>
+                <p className={styles.title}>{minWinGame && minWinGame.game_name ? minWinGame.game_name.toUpperCase() : "Untitled"}</p>
                 <p>Побед: {minWinGame ? minWinGame.winPercentage.toFixed(1) : 0} %</p>
             </div>
         </div>
