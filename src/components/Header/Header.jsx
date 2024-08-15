@@ -28,10 +28,12 @@ export default function Header() {
   }, [user]);
 
   const handleLogout = async () => {
+    
+    if (!user) return;
     try {
       const { error } = await supabase.auth.signOut();
       if (error) throw error;
-      navigate("/start");
+      setTimeout(() => navigate("/start"), 500);  // Задержка в 500 мс для отладки
     } catch (error) {
       console.error("Ошибка при выходе:", error.message);
     }

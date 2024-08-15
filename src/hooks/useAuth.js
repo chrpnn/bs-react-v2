@@ -6,19 +6,22 @@ export function useAuth() {
 
     useEffect(() => {
         // Подписка на изменения состояния аутентификации
-        const { data: authListener } = supabase.auth.onAuthStateChange((event, session) => {
+        const { data: authListener, error } = supabase.auth.onAuthStateChange((event, session) => {
             setCurrentUser(session?.user || null);
         });
 
+        if (error) {
+            console.error('Error setting up auth listener:', error);
+            return;
+        }
 
         // Возвращаем функцию для отмены подписки
         return () => {
-            authListener?.unsubscribe();
+            if (authListener?.subscription) {
+                authListener.subscription.unsubscribe();
+            }
         };
     }, []);
     
     return currentUser;
-
-    
 }
-
