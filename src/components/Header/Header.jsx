@@ -29,13 +29,14 @@ export default function Header() {
 
   const handleLogout = async () => {
     
-    if (!user) return;
+    
     try {
       const { error } = await supabase.auth.signOut();
       if (error) throw error;
       setTimeout(() => navigate("/start"), 500);  // Задержка в 500 мс для отладки
     } catch (error) {
       console.error("Ошибка при выходе:", error.message);
+      navigate("/start");
     }
   };
 
