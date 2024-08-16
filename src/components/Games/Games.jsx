@@ -22,13 +22,15 @@ export default function Games() {
             try {
                 const { data, error } = await supabase
                     .from("playerMatch")
-                    .select(`
+                    .select(
+                        `
                         id_game, 
                         game_name, 
                         result, 
                         createdat, 
                         game(image)
-                    `)
+                    `
+                    )
                     .eq("id_player", user.id);
 
                 if (error) throw error;
@@ -36,12 +38,12 @@ export default function Games() {
                 const gameCounts = {};
                 data.forEach((game) => {
                     if (!gameCounts[game.id_game]) {
-                        gameCounts[game.id_game] = { 
-                            id_game: game.id_game, 
-                            game_name: game.game_name, 
-                            count: 0, 
-                            wins: 0, 
-                            image: game.game.image // Получаем URL изображения прямо здесь
+                        gameCounts[game.id_game] = {
+                            id_game: game.id_game,
+                            game_name: game.game_name,
+                            count: 0,
+                            wins: 0,
+                            image: game.game.image, // Получаем URL изображения прямо здесь
                         };
                     }
                     gameCounts[game.id_game].count += 1;
@@ -50,9 +52,9 @@ export default function Games() {
                     }
                 });
 
-                const uniqueGames = Object.values(gameCounts).map(game => ({
+                const uniqueGames = Object.values(gameCounts).map((game) => ({
                     ...game,
-                    winPercentage: (game.wins / game.count) * 100
+                    winPercentage: (game.wins / game.count) * 100,
                 }));
 
                 setGames(uniqueGames);
@@ -70,9 +72,7 @@ export default function Games() {
 
     return (
         <div className={styles.root}>
-        
             <div className={styles.sticky}>
-
                 <div className={styles.titleGroup}>
                     <h2>Коллекция игр</h2>
                     <button
@@ -86,14 +86,19 @@ export default function Games() {
                 <FastInfo uniqueGames={games} gameStats={games} />
             </div>
 
-            
-
-
-
             {isLoading ? (
-                <div className={styles.cards}>
-                    <Skeleton count={4} height={200} width={165} borderRadius={12} />
-                </div>
+                <div className={styles.sceletonCards}>
+                {[...Array(4)].map((_, index) => (
+                    <Skeleton
+                        key={index}
+                        height={200}
+                        borderRadius={12}
+                        baseColor="#cccccc07"
+                        highlightColor="#cccccc10"
+                    />
+                ))}
+            </div>
+            
             ) : (
                 <div className={styles.cards}>
                     {displayedGames.map((game) => (
@@ -103,7 +108,10 @@ export default function Games() {
                             game_name={game.game_name}
                             count={game.count}
                             wins={game.wins}
-                            imageUrl={game.image || "https://page-images.websim.ai/Carcassonne_1024x1024xHDQ9l7SLW9TYfKZJgxb004f20d958db.jpg"}
+                            imageUrl={
+                                game.image ||
+                                "https://page-images.websim.ai/Carcassonne_1024x1024xHDQ9l7SLW9TYfKZJgxb004f20d958db.jpg"
+                            }
                         />
                     ))}
                 </div>

@@ -29,13 +29,11 @@ export default function Home({ }) {
                     setPercentWinsCount(percentage.toFixed(0)); // Округляем до двух знаков после запятой
                 }
             } catch (error) {
-                console.error('Error fetching game stats:', error);
+                console.error("Error fetching game stats:", error);
             }
         };
 
         fetchGameStats();
-
-        
     }, []);
 
     console.log("percentWinsCount", percentWinsCount);
@@ -48,15 +46,22 @@ export default function Home({ }) {
                 <div className={styles.topInfoResult}>
                     <div className={styles.total}>
                         <p className={styles.counter}>{gameCount}</p>
-                        <p className={styles.describe}>Сыграно<br />партий</p>
+                        <p className={styles.describe}>
+                            Сыграно
+                            <br />
+                            партий
+                        </p>
                     </div>
                     <div className={styles.total}>
                         <p className={styles.counter}>{percentWinsCount} %</p>
-                        <p className={styles.describe}>Процент<br />побед</p>
+                        <p className={styles.describe}>
+                            Процент
+                            <br />
+                            побед
+                        </p>
                     </div>
                     <AddGameButton setModalActive={setModalActive} />
                 </div>
-
             </div>
 
             {/* <AddResultModal active={modalActive} setActive={setModalActive} /> */}

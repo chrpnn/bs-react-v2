@@ -42,8 +42,8 @@ export default function History() {
                 // Подписываемся на обновления
                 const subscription = supabase
                     .from(`playerMatch:id_player=eq.${user.id}`)
-                    .on('*', (payload) => {
-                        console.log('Change received!', payload);
+                    .on("*", (payload) => {
+                        console.log("Change received!", payload);
                         fetchGames(); // Обновляем данные при изменении
                     })
                     .subscribe();
@@ -67,7 +67,6 @@ export default function History() {
     return (
         <div className={styles.root}>
             <div className={styles.sticky}>
-
                 <div className={styles.titleGroup}>
                     <h2>История</h2>
                     <button
@@ -79,36 +78,22 @@ export default function History() {
                 </div>
 
                 <Search searchValue={searchValue} setSearchValue={setSearchValue} />
-
-
             </div>
-            
 
             {isLoading ? (
-                <div className={styles.container}>
-                    <Skeleton
-                        height={72}
-                        borderRadius={12}
-                        marginBottom={12}
-                        baseColor="#cccccc07"
-                        highlightColor="#cccccc10"
-                    />
-                    <Skeleton
-                        height={72}
-                        borderRadius={12}
-                        marginBottom={12}
-                        baseColor="#cccccc07"
-                        highlightColor="#cccccc10"
-                    />
-                    <Skeleton
-                        height={72}
-                        borderRadius={12}
-                        marginBottom={12}
-                        baseColor="#cccccc07"
-                        highlightColor="#cccccc10"
-                    />
+                <div className={styles.sceletonContainer}>
+                    {[...Array(3)].map((_, index) => (
+                        <Skeleton
+                            height={72}
+                            borderRadius={12}
+                            marginBottom={12}
+                            baseColor="#cccccc07"
+                            highlightColor="#cccccc10"
+                        />
+                    ))}
                 </div>
             ) : (
+                
                 <div className={styles.container}>
                     {displayedGames.map((obj, i) => (
                         <GameResult key={obj.id} {...obj} />

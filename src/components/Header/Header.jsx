@@ -53,8 +53,8 @@ export default function Header() {
               circle={true}
               height={48}
               width={48}
-              baseColor="#cccccc20"
-              highlightColor="#cccccc50"
+              baseColor="#f2f2f2"
+              highlightColor="#cccccc40"
             />
           ) : (
             <img src={user?.user_metadata?.avatar_url || avatar} alt="avatar" />
@@ -65,8 +65,8 @@ export default function Header() {
             {isLoading ? (
               <Skeleton
                 width={89}
-                baseColor="#cccccc20"
-                highlightColor="#cccccc50"
+                baseColor="#f2f2f2"
+              highlightColor="#cccccc40"
               />
             ) : user ? (
               user.user_metadata?.name || user.email
