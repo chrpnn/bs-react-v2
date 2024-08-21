@@ -1,5 +1,4 @@
-$button-color: #7B61FF;
-$text-color: #fff;
+@import "../../variables.scss";
 
 .root {
     background-color: $button-color;
@@ -14,8 +13,9 @@ $text-color: #fff;
     max-width: 100%;
     cursor: pointer;
     border: none;
+    transition: background 0.3s ease;
 
     &:hover {
-        background: darken($button-color, 5%);
+        background: darken($button-color, 10%);
     }
 }

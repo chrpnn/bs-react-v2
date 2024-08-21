@@ -1,16 +1,27 @@
 import { useState, useEffect } from 'react';
-import { onAuthStateChanged } from 'firebase/auth';
-import { auth } from '../firebase';
+import { supabase } from '../../src/utils/supabaseClient';
 
 export function useAuth() {
     const [currentUser, setCurrentUser] = useState(null);
 
     useEffect(() => {
-        const unsubscribe = onAuthStateChanged(auth, (user) => {
-            setCurrentUser(user);
+        // Подписка на изменения состояния аутентификации
+        const { data: authListener, error } = supabase.auth.onAuthStateChange((event, session) => {
+            setCurrentUser(session?.user || null);
         });
-        return unsubscribe;
-    }, []);
 
+        if (error) {
+            console.error('Error setting up auth listener:', error);
+            return;
+        }
+
+        // Возвращаем функцию для отмены подписки
+        return () => {
+            if (authListener?.subscription) {
+                authListener.subscription.unsubscribe();
+            }
+        };
+    }, []);
+    
     return currentUser;
 }

@@ -1,12 +1,6 @@
 import React from "react";
-import {
-    getFirestore,
-    collection,
-    doc,
-    getDocs,
-    addDoc,
-} from "firebase/firestore";
 import { useAuth } from "../../hooks/useAuth";
+import { fetchGames, addGameResult } from "../../utils/gameService";
 
 import styles from "./AddResultModal.module.scss";
 
@@ -15,62 +9,52 @@ export default function AddResultModal({ active, setActive }) {
     const [date, setDate] = React.useState("");
     const [status, setStatus] = React.useState("win");
     const [boardgames, setBoardgames] = React.useState([]);
-    const [selectedGame, setSelectedGame] = React.useState(""); // Выбранная игра// Список игр, загружаемый с сервера
+    const [selectedGame, setSelectedGame] = React.useState("");
+    const [showAdditionalFields, setShowAdditionalFields] = React.useState(false);
 
-    const db = getFirestore(); // Инициализация Firestore
-    const user = useAuth(); // Получение текущего пользователя
+    const user = useAuth();
 
     // Используем useEffect для загрузки списка игр с сервера при монтировании компонента
     React.useEffect(() => {
-        const fetchGames = async () => {
-            try {
-                // Получение документов из коллекции "boardgames"
-                const querySnapshot = await getDocs(collection(db, "boardgames"));
-                // Маппинг документов в массив объектов
-                const gamesList = querySnapshot.docs.map((doc) => ({
-                    id: doc.id,
-                    ...doc.data(),
-                }));
-                setBoardgames(gamesList); // Установка списка игр в локальное состояние
-            } catch (error) {
-                console.error("Error fetching games:", error);
-            }
+        const loadGames = async () => {
+            const gamesList = await fetchGames(); // Получаем список игр
+            console.log("список игр:", gamesList);
+            setBoardgames(gamesList); // Устанавливаем их в состояние
         };
 
-        fetchGames();
-    }, [db]); // Зависимость - db, чтобы эффект выполнялся только при изменении db
+        loadGames();
+    }, []);
 
     // Функция для добавления результата игры
     const handleAddGame = async () => {
-        if (!selectedGame || !selectedGame.name) {
+        if (!selectedGame || !selectedGame.boardgameName) {
             alert("Please select a game."); // Проверка на выбор игры
             return;
         }
 
         const newGameResult = {
-            gameName: selectedGame.name, // Имя выбранной игры
+            gameName: selectedGame.boardgameName, // Имя выбранной игры
             date, // Дата
             status, // Статус (победа или поражение)
             createdAt: new Date(), // Время создания
         };
 
-        try {
-            await addDoc(collection(db, `users/${user.uid}/games`), newGameResult);
+        console.log(user.id);
+        console.log(newGameResult);
+        const success = await addGameResult(user.id, newGameResult); // Добавляем результат игры
+
+        if (success) {
             setActive(false); // Закрытие модального окна
-            console.log("Document written");
             setGameName(""); // Сброс полей формы
             setDate("");
             setStatus("win");
-        } catch (error) {
-            console.error("Error adding game result:", error);
         }
     };
 
     // Обработчик изменения выбора игры
     const handleGameChange = (e) => {
         const name = e.target.value;
-        console.log(name);
-        const game = boardgames.find((g) => g.name === name);
+        const game = boardgames.find((g) => g.boardgameName === name);
         setSelectedGame(game); // Установка объекта выбранной игры
     };
 
@@ -86,6 +70,20 @@ export default function AddResultModal({ active, setActive }) {
                 <div className={styles.formGroup}>
                     <h2>Добавить результат</h2>
                     <div className={styles.form}>
+                        <div className={styles.checkboxGroup}>
+                            <label className={styles.checkbox}>
+                                <input
+                                    type="checkbox"
+                                    className={styles.hiddenCheckbox}
+                                    onChange={() =>
+                                        setShowAdditionalFields(!showAdditionalFields)
+                                    }
+                                />
+                                <span className={styles.customCheckbox}></span>
+                                Публичная партия
+                            </label>
+                        </div>
+
                         <label className={styles.label}>
                             <select
                                 className={styles.input}
@@ -94,13 +92,14 @@ export default function AddResultModal({ active, setActive }) {
                             >
                                 <option value="">Выбери игру</option>
                                 {boardgames.map((game) => (
-                                    <option key={game.id} value={game.name}>
-                                        {game.name.toUpperCase()}
+                                    <option key={game.id} value={game.boardgameName}>
+                                        {game.boardgameName.toUpperCase()}
                                     </option>
                                 ))}
                             </select>
-                            <span className={styles.borderText}>Название игры</span>
+                            <span className={styles.borderText}>Игра</span>
                         </label>
+
                         <label className={styles.label}>
                             <input
                                 className={styles.input}
@@ -110,24 +109,64 @@ export default function AddResultModal({ active, setActive }) {
                             />
                             <span className={styles.borderText}>Дата игры</span>
                         </label>
-                        <label className={styles.label}>
-                            <select
-                                className={styles.input}
-                                value={status}
-                                onChange={(e) => setStatus(e.target.value)}
-                            >
-                                <option value="win">Win</option>
-                                <option value="lose">Lose</option>
-                            </select>
-                            <span className={styles.borderText}>Результат</span>
-                        </label>
+
+                        {showAdditionalFields ? (
+                            <>
+                                <label className={styles.label}>
+                                    <select
+                                        className={styles.input}
+                                        value={selectedGame ? selectedGame.name : ""}
+                                        onChange={handleGameChange}
+                                    >
+                                        <option value="">Выбери группу</option>
+                                        {boardgames.map((game) => (
+                                            <option key={game.id} value={game.boardgameName}>
+                                                {game.boardgameName.toUpperCase()}
+                                            </option>
+                                        ))}
+                                    </select>
+                                    <span className={styles.borderText}>Группа</span>
+                                </label>
+
+                                <label className={styles.label}>
+                                    <select
+                                        className={styles.input}
+                                        value={selectedGame ? selectedGame.name : ""}
+                                        onChange={handleGameChange}
+                                    >
+                                        <option value="">Выбери победителя</option>
+                                        {boardgames.map((game) => (
+                                            <option key={game.id} value={game.boardgameName}>
+                                                {game.boardgameName.toUpperCase()}
+                                            </option>
+                                        ))}
+                                    </select>
+                                    <span className={styles.borderText}>Победитель</span>
+                                </label>
+                            </>
+                        ) : (
+                            <label className={styles.label}>
+                                <select
+                                    className={styles.input}
+                                    value={status}
+                                    onChange={(e) => setStatus(e.target.value)}
+                                >
+                                    <option value="win">Win</option>
+                                    <option value="lose">Lose</option>
+                                </select>
+                                <span className={styles.borderText}>Результат</span>
+                            </label>
+                        )}
+
+                        
+
                         <button
                             className={styles.button}
                             onClick={() => {
                                 handleAddGame();
                             }}
                         >
-                            Add Game
+                            Добавить
                         </button>
                     </div>
                 </div>

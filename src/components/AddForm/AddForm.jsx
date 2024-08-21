@@ -1,76 +1,80 @@
 import React, { useState } from "react";
-import { getFirestore, collection, query, where, getDocs, doc, setDoc } from "firebase/firestore";
-import { useAuth } from "../../hooks/useAuth";
+import { supabase } from "../../utils/supabaseClient"; // Импорт Supabase
+import { useUser } from "../../UserContext";
 import styles from "./AddForm.module.scss";
 
 export default function AddForm({ onClose }) {
     const [nameValue, setNameValue] = useState("");
     const [emailValue, setEmailValue] = useState("");
     const [errorMessage, setErrorMessage] = useState("");
-    const db = getFirestore();
-    const user = useAuth();
+    const [successMessage, setSuccessMessage] = useState("");
 
-    const handleAddFriend = async () => {
-        if (!user) {
-            setErrorMessage("User is not defined");
-            return;
-        }
+    const { user } = useUser();
+    const playerId = user?.id;
 
+    // Функция для отправки запроса на дружбу
+    const sendFriendRequest = async () => {
         try {
-            const q = query(
-                collection(db, "users"),
-                where("name", "==", nameValue),
-                where("email", "==", emailValue)
-            );
+            // Поиск пользователя по имени или email
+            const { data: friend, error: searchError } = await supabase
+                .from("player")
+                .select("*")
+                .or(`name.eq.${nameValue},email.eq.${emailValue}`)
+                .single();
 
-            const querySnapshot = await getDocs(q);
+            console.log(friend);
 
-            if (querySnapshot.empty) {
-                setErrorMessage("User with this name and email not found");
+            if (searchError) {
+                setErrorMessage("Пользователь не найден.");
                 return;
             }
 
-            const friendDoc = querySnapshot.docs[0];
-            const friendData = friendDoc.data();
+            // Отправка запроса на дружбу
+            const { data, error: requestError } = await supabase
+                .from("friends")
+                .insert([
+                    {
+                        player_id1: playerId,
+                        player_id2: friend.id,
+                        status: "pending",
+                    },
+                ]);
 
-            const friend = {
-                uid: friendDoc.id,
-                name: friendData.name,
-                avatar: friendData.avatar || 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS5iqy7AzrG-dXXWp76jDB7n7Bsz98MlkOqDg&s'
-            };
+            if (requestError) {
+                setErrorMessage("Ошибка при отправке запроса.");
+                return;
+            }
 
-            await setDoc(doc(collection(db, `users/${user.uid}/friends`), friend.uid), friend);
-
-            setNameValue('');
-            setEmailValue('');
-            setErrorMessage('');
-            onClose();
+            setSuccessMessage("Запрос на дружбу отправлен!");
+            setNameValue("");
+            setEmailValue("");
         } catch (error) {
-            console.error("Error adding friend:", error);
-            setErrorMessage("Error adding friend");
+            setErrorMessage("Произошла ошибка.");
+            console.error(error);
         }
     };
 
     return (
         <div className={styles.root}>
-            <input 
-                type="text" 
-                value={nameValue} 
-                onChange={(e) => setNameValue(e.target.value)} 
+            <input
+                type="text"
+                value={nameValue}
+                onChange={(e) => setNameValue(e.target.value)}
                 placeholder="Введите имя..."
                 className={styles.input}
             />
-            <input 
-                type="email" 
-                value={emailValue} 
-                onChange={(e) => setEmailValue(e.target.value)} 
+            <input
+                type="email"
+                value={emailValue}
+                onChange={(e) => setEmailValue(e.target.value)}
                 placeholder="Введите email..."
                 className={styles.input}
             />
-            <button onClick={handleAddFriend} className={styles.button}>
-                Добавить друга
+            <button className={styles.button} onClick={sendFriendRequest}>
+                Отправить запрос
             </button>
             {errorMessage && <p className={styles.error}>{errorMessage}</p>}
+            {successMessage && <p className={styles.success}>{successMessage}</p>}
         </div>
     );
 }

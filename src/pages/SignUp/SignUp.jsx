@@ -7,15 +7,10 @@ import MainButton from "../../components/MainButton/MainButton";
 
 import styles from "./SignUp.module.scss";
 
-import logoImage from "../../assets/Logo.svg";
+import logoImage from "../../assets/logoB.png";
 import googleLogo from "../../assets/Google-logo.svg";
 import twitterLogo from "../../assets/Frame.svg";
 import facebookLogo from "../../assets/Facebook-logo.svg";
-
-// FIREBASE AUTH
-// import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
-// import { auth, db } from "../../firebase";
-// import { collection, doc, setDoc } from "firebase/firestore";
 
 export default function SignUp() {
     const [email, setEmail] = React.useState("");
@@ -53,37 +48,7 @@ export default function SignUp() {
         } catch (err) {
             console.error(err.message);
             setError(err.message);
-        }
-
-        // FIREBASE AUTH
-        // createUserWithEmailAndPassword(auth, email, password)
-        //     .then((userCredential) => {
-        //         const user = userCredential.user;
-        //         return updateProfile(user, {
-        //             displayName: nickname,
-        //         }).then(() => user);
-        //     })
-        //     .then((user) => {
-        //         // Добавление документа пользователя в Firestore
-        //         const userDocRef = doc(collection(db, "users"), user.uid);
-        //         return setDoc(userDocRef, {
-        //             name: nickname,
-        //             email: email
-        //         });
-        //     })
-        //     .then(() => {
-        //         console.log("пользователь создан");
-        //         setEmail("");
-        //         setPassword("");
-        //         setConfirmPassword("");
-        //         setError("");
-        //         setNickname("");
-        //         navigate("/");
-        //     })
-        //     .catch((err) => {
-        //         console.error(err);
-        //         setError(err.message);
-        //     });
+        }        
     };
 
     return (
@@ -134,7 +99,7 @@ export default function SignUp() {
                     {error && <p className={styles.error}>{error}</p>}
                 </div>
 
-                <div className={styles.socialButtonsGroup}>
+                {/* <div className={styles.socialButtonsGroup}>
                     <p>Войти с помощью</p>
                     <div className={styles.socialButtonsSubgroup}>
                         <button className={styles.socialButton}>
@@ -147,7 +112,7 @@ export default function SignUp() {
                             <img src={twitterLogo} alt="Twitter" />
                         </button>
                     </div>
-                </div>
+                </div> */}
             </div>
         </div>
     );

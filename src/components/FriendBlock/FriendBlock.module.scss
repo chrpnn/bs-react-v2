@@ -1,40 +1,65 @@
 @import "../../variables.scss";
 
 .root {
-    
+    background-color: transparent;
+    padding-inline: 15px;
+    margin-block-end: 15px;
     display: flex;
-    justify-content: space-between;
     align-items: center;
-    border: 1px solid rgba(255, 255, 255, 0.0352941176);
-    background-color: rgba(47, 60, 80, 0.3803921569);
-    min-height: 70px;
-    min-width: 163px;
-    border-radius: 12px;
-    margin: 15px;
-    overflow: hidden;
+    justify-content: space-between;
 
-    img {
-        width: 70px;
-        object-fit: cover;
-        height: 70px;
-        border-right: 1px solid rgba(255, 255, 255, 0.0352941176);
-    }
-
-    p { 
-        color: $accent-color;
-        font-size: 12px;
-    }
-
-    .userInfo {
-        
+    .container {
         display: flex;
-        flex-direction: column;
-        justify-content: center;
-        align-items: start;
-        padding-inline-end: 15px;
+        gap: 10px;
 
-        p {
-            color: #CDCDCD;
+        .avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+        }
+
+        .content {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+
+            .friendName {
+                color: $text-color;
+                font-size: 14px;
+                letter-spacing: 0.2px;
+                font-weight: 700;
+            }
+
+            .friensStats {
+                display: flex;
+                align-items: center;
+
+                p {
+                    color: $text-second-color;
+                    font-size: 12px;
+                    padding-inline: 10px;
+                    border-right: 1px solid $devider-color;
+                }
+
+                p:first-child {
+                    padding-inline-start: 0px;
+                }
+
+                p:last-child {
+                    padding-inline: 10px;
+                    border: none;
+                }
+            }
+        }
+    }
+
+    .button {
+        background-color: transparent;
+        border: none;
+        cursor: pointer;
+
+        .buttonIcon {
+            width: 20px;
         }
     }
 }

@@ -15,14 +15,13 @@ const Groups = lazy(() => import("./pages/Groups/Groups"));
 
 import { UserProvider } from "./UserContext";
 import DiceLoader from "./components/DiceLoader/DiceLoader";
+import ProductCard from "./components/ProductCard/ProductCard";
 
-const loadingStyle: React.CSSProperties = {
-    backgroundColor: "#28333f",
+const loadingStyle: React.CSSProperties = {    
     height: "100vh",
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
-    color: "#fff",
 };
 
 const router = createBrowserRouter([

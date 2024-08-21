@@ -5,52 +5,52 @@
     flex-direction: column;
     gap: 15px;
     align-items: center;
-    border-radius: 12px;
     margin: 15px;
-    border: 1px solid rgba(255, 255, 255, 0.0352941176);
-    background-color: rgba(47, 60, 80, 0.3803921569);
-    // animation: fadeIn 0.5s ease-in-out;
-    padding: 15px;
+    animation: fadeIn 0.3s forwards;
 
     .input {
-        color: #fff;
-        min-height: 40px;
+        height: 50px;
         border-radius: 12px;
-        border: 1px solid $border-color;
-        background-color: transparent;        
+        border: none;
+        background-color: $background-color;
         width: 100%;
-        padding-inline: 10px;
+        padding-inline: 16px;
     }
 
     .button {
-        min-height: 40px;
-        padding: 8px 16px;
+        height: 50px;
+        padding: 16px;
         border: none;
         border-radius: 12px;
-        background-color: $accent-color;
-        color: white;
+        background-color: $button-color;
+        color: $text-color;
         cursor: pointer;
         transition: background-color 0.3s;
 
         &:hover {
-            background-color: #0056b3;
+            background-color: darken($button-color, 5%);
         }
     }
 
     .error {
         font-size: 10px;
-        color: red;
-        // margin-top: 10px;
+        color: $error-color;
+    }
+
+    .success {
+        font-size: 10px;
+        color: $success-color;
     }
 }
 
-// @keyframes fadeIn {
-//     from {
-//         opacity: 0;
-//         transform: translateY(-10px);
-//     }
-//     to {
-//         opacity: 1;
-//         transform: translateY(0);
-//     }
-// }
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}

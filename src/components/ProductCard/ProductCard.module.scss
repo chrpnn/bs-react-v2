@@ -1,0 +1,50 @@
+/* src/components/ProductCard.module.scss */
+@import "../../variables.scss";
+
+.root {
+    width: 180px;
+    height: 277px;
+    background-color: transparent;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+
+    .image {
+        width: 100%;
+
+        img {
+            height: 180px;
+            width: auto;
+            border-radius: 18px;
+
+        }
+    }
+
+    .content {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+
+        .details {
+            p {
+                font-size: 11px;
+                color: $text-second-color;
+                line-height: 13px;
+            }
+        }
+
+        .actions {
+            margin-top: 5px;
+            border-radius: 20px;
+            display: inline-flex;
+            width: 80px;
+            height: 36px;
+            padding: 7px 32px 7px 12px;
+            background-color: $input-color;
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            border-radius: 40px;
+        }
+    }
+}

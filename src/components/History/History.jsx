@@ -1,66 +1,58 @@
 import React from "react";
-import {
-    getFirestore,
-    collection,
-    query,
-    where,
-    onSnapshot,
-} from "firebase/firestore";
-import { useAuth } from "../../hooks/useAuth";
+import { supabase } from "../../utils/supabaseClient";
 import GameResult from "../GameResult/GameResult";
 import Search from "../Search/Search";
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
 
+import { useUser } from "../../UserContext";
+
 import styles from "./History.module.scss";
 
-export default function History({ setGameCount, setPercentWinsCount }) {
+export default function History() {
     const [games, setGames] = React.useState([]);
     const [searchValue, setSearchValue] = React.useState("");
     const [showAll, setShowAll] = React.useState(false);
     const [isLoading, setIsLoading] = React.useState(true);
 
-    const user = useAuth();
+    const { user } = useUser();
 
     const sortedGames = React.useMemo(() => {
         return games.slice().sort((a, b) => new Date(b.date) - new Date(a.date));
     }, [games]);
 
     React.useEffect(() => {
-        const db = getFirestore();
+        if (!user) return; // Ждем, пока будет доступен пользователь
 
         const fetchGames = async () => {
-            if (!user) return; // Ждем, пока будет доступен пользователь
-
+            setIsLoading(true);
             try {
-                const userGamesRef = collection(db, `users/${user.uid}/games`);
-                const q = searchValue.toLowerCase()
-                    ? query(
-                        userGamesRef,
-                        where("gameName", ">=", searchValue.toLowerCase()),
-                        where("gameName", "<=", searchValue.toLowerCase() + "\uf8ff")
-                    )
-                    : userGamesRef;
-                console.log("ищем", q);
+                // Запрашиваем данные из Supabase
+                const { data, error } = await supabase
+                    .from("playerMatch")
+                    .select("*")
+                    .eq("id_player", user.id) // Фильтр по id текущего пользователя
+                    .ilike("game_name", `%${searchValue}%`); // Поиск по имени игры
 
-                // Используем onSnapshot для получения данных в реальном времени
-                const unsubscribe = onSnapshot(q, (querySnapshot) => {
-                    const arr = querySnapshot.docs.map((doc) => ({
-                        id: doc.id,
-                        ...doc.data(),
-                    }));
+                console.log(data);
+                if (error) throw error;
 
-                    setGames(arr);
-                    setGameCount(arr.length);
-                    setPercentWinsCount(
-                        (arr.filter((item) => item.status === "win").length / arr.length) *
-                        100
-                    );
-                    setIsLoading(false);
-                });
+                setGames(data);
+                setIsLoading(false);
 
-                // Возвращаем функцию отписки, чтобы отписаться от потока данных при размонтировании компонента
-                return () => unsubscribe();
+                // Подписываемся на обновления
+                const subscription = supabase
+                    .from(`playerMatch:id_player=eq.${user.id}`)
+                    .on("*", (payload) => {
+                        console.log("Change received!", payload);
+                        fetchGames(); // Обновляем данные при изменении
+                    })
+                    .subscribe();
+
+                // Отписка при размонтировании компонента
+                return () => {
+                    supabase.removeSubscription(subscription);
+                };
             } catch (error) {
                 console.error("Error fetching the games data:", error);
                 setIsLoading(false);
@@ -68,47 +60,44 @@ export default function History({ setGameCount, setPercentWinsCount }) {
         };
 
         fetchGames();
-    }, [user, searchValue, setGameCount, setPercentWinsCount]);
+    }, [user, searchValue]);
 
     const displayedGames = showAll ? sortedGames : sortedGames.slice(0, 3);
+    console.log(displayedGames);
 
     return (
         <div className={styles.root}>
-            <div className={styles.titleGroup}>
-                <h2>History</h2>
-                <button
-                    className={styles.toggleShowAll}
-                    onClick={() => setShowAll(!showAll)}
-                >
-                    {showAll ? "Hide" : "Show all"}
-                </button>
+            <div className={styles.sticky}>
+                <div className={styles.titleGroup}>
+                    <h2>История</h2>
+                    <button
+                        className={styles.toggleShowAll}
+                        onClick={() => setShowAll(!showAll)}
+                    >
+                        {showAll ? "Скрыть" : "Показать >"}
+                    </button>
+                </div>
+
+                <Search
+                    placeholder="Поиск по игре..." // Специфический плейсхолдер
+                    searchValue={searchValue}
+                    setSearchValue={setSearchValue}
+                    onSearch={() => console.log("Поиск выполнен!")}
+                />
             </div>
 
-            <Search searchValue={searchValue} setSearchValue={setSearchValue} />
-
             {isLoading ? (
-                <div className={styles.container}>
-                    <Skeleton
-                        height={72}
-                        borderRadius={12}
-                        marginBottom={12}
-                        baseColor="#cccccc07"
-                        highlightColor="#cccccc10"
-                    />
-                    <Skeleton
-                        height={72}
-                        borderRadius={12}
-                        marginBottom={12}
-                        baseColor="#cccccc07"
-                        highlightColor="#cccccc10"
-                    />
-                    <Skeleton
-                        height={72}
-                        borderRadius={12}
-                        marginBottom={12}
-                        baseColor="#cccccc07"
-                        highlightColor="#cccccc10"
-                    />
+                <div className={styles.sceletonContainer}>
+                    {[...Array(3)].map((_, index) => (
+                        <Skeleton
+                            key={index}
+                            height={72}
+                            borderRadius={12}
+                            marginBottom={12}
+                            baseColor="#cccccc07"
+                            highlightColor="#cccccc10"
+                        />
+                    ))}
                 </div>
             ) : (
                 <div className={styles.container}>

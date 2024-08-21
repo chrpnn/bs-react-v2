@@ -1,0 +1,60 @@
+@import "../../variables.scss";
+
+.root {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 95vh;
+    background: $background-color;
+    box-shadow: 0 -4px 8px rgba(0, 0, 0, 0.2);
+    transform: translateY(100%);
+    transition: transform 0.3s ease;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    border-top-left-radius: 18px;
+    border-top-right-radius: 18px;
+
+    .image {
+        img {
+            width: 100%;
+            height: 380px;
+            object-fit: cover;
+            border-top-left-radius: 18px;
+            border-top-right-radius: 18px;
+        }
+    }
+
+    .content {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        padding: 16px 20px;
+        
+        p {
+            text-align: justify;
+        }
+    }
+}
+
+.root.show {
+    transform: translateY(0);
+}
+
+.root.content {
+    padding: 16px;
+    overflow-y: auto;
+    flex: 1;
+}
+
+.closeButton {
+    position: absolute;
+    top: 8px;
+    right: 12px;
+    border: none;
+    background: transparent;
+    font-size: 24px;
+    cursor: pointer;
+}
+

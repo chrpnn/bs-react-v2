@@ -1,9 +1,20 @@
 @import "../../variables.scss";
 
 .root {
+    margin-block-end: 10px;
+
+    .sticky {
+        position: sticky;
+        top: 0;
+        background-color: $layout-background-color;
+        border-radius: 12px 12px 0 0;        
+        }
+
     h2 {
         font-size: 18px;
-        letter-spacing: 1px;
+        font-weight: 700;
+        color: $text-color;
+        
     }
 
     .titleGroup {
@@ -16,8 +27,8 @@
         cursor: pointer;
         border: none;
         background-color: transparent;
-        color: $accent-color;
-        font-size: 14px;
+        color: $text-second-color;
+        font-size: 13px;
     }
 
 
@@ -26,5 +37,14 @@
         flex-direction: column;
         gap: 15px;
         padding-inline: 15px;
+    }
+
+    .sceletonContainer {
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+        padding-inline: 15px;
+        position: relative;
+        z-index: -1;
     }
 }

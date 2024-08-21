@@ -1,13 +1,7 @@
-$description-color: #ccc;
-$background-color: #28333f;
-$input-color: #2f3c50;
-$text-color: #fff;
-$accent-color: #7b61ff;
-$devider-color: #4b576b;
-$border-color: #4b576b;
+@import "../../variables.scss";
 
 .root {
-    background-color: $background-color;
+    background-color: $layout-background-color;
     color: $text-color;
     padding: 25px;
     height: 100vh;
@@ -22,9 +16,7 @@ $border-color: #4b576b;
         justify-content: space-between;
 
         .logo {
-            width: 100px;
-            height: 100px;
-            cursor: pointer;
+            width: 200px;
         }
     
         .loginGroup {
@@ -51,7 +43,8 @@ $border-color: #4b576b;
                     height: 56px;
                     padding: 16px;
                     border-radius: 12px;
-                    border: 1px solid $border-color;
+                    // border: 1px solid $border-color;
+                    border: none;
                     background-color: $input-color;
                     font-size: 14px;
                     color: $text-color;
@@ -99,7 +92,7 @@ $border-color: #4b576b;
             }
     
             .hiddenCheckbox:checked+.customCheckbox {
-                background-color: $accent-color;
+                background-color: $button-color;
             }
     
             .hiddenCheckbox:checked+.customCheckbox:after {

@@ -1,11 +1,8 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "../../utils/supabaseClient";
-
-// import { signOut } from "firebase/auth";
-// import { auth } from "../../firebase";
 
 import styles from "./Header.module.scss";
 
@@ -16,24 +13,42 @@ import EditProfileModal from "../EditProfileModal/EditProfileModal";
 
 export default function Header() {
   const { user } = useUser();
+
   const navigate = useNavigate();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+  const [player, setPlayer] = useState(null);
 
   useEffect(() => {
-    if (user) {
-      setIsLoading(false);
-      console.log("user", user);
-    }
-  }, [user]);
+    const fetchPlayer = async () => {
+      if (user) {
+        try {
+          const { data: playerData, error } = await supabase
+            .from("player")
+            .select("*")
+            .eq("id", user.id)
+            .single();
+          if (error) throw error;
+          setPlayer(playerData); // Сохраняем данные игрока в состояние
+          console.log(playerData);
+          setIsLoading(false);
+        } catch (error) {
+          console.error("Error fetching player:", error);
+        }
+      }
+    };
+
+    fetchPlayer(); // Вызываем функцию для получения данных игрока
+  }, [user]); // Функция будет вызвана при изменении `user`
 
   const handleLogout = async () => {
     try {
       const { error } = await supabase.auth.signOut();
       if (error) throw error;
-      navigate("/start");
+      setTimeout(() => navigate("/start"), 500); // Задержка в 500 мс для отладки
     } catch (error) {
       console.error("Ошибка при выходе:", error.message);
+      navigate("/start");
     }
   };
 
@@ -50,11 +65,11 @@ export default function Header() {
               circle={true}
               height={48}
               width={48}
-              baseColor="#cccccc20"
-              highlightColor="#cccccc50"
+              baseColor="#f2f2f2"
+              highlightColor="#cccccc40"
             />
           ) : (
-            <img src={user?.user_metadata?.avatar_url || avatar} alt="avatar" />
+            <img src={player.avatarURL || avatar} alt="avatar" />
           )}
           <p>
             Привет!
@@ -62,11 +77,11 @@ export default function Header() {
             {isLoading ? (
               <Skeleton
                 width={89}
-                baseColor="#cccccc20"
-                highlightColor="#cccccc50"
+                baseColor="#f2f2f2"
+                highlightColor="#cccccc40"
               />
             ) : user ? (
-              user.user_metadata?.name || user.email
+              player.name || user.email
             ) : (
               "Guest"
             )}

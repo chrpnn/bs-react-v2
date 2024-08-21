@@ -1,20 +1,19 @@
 @import "../../variables.scss";
 
-.root {
-    min-height: 58px;
+.root {    
+    min-height: 50px;
     display: flex;
     justify-content: space-between;
-    padding: 25px;
+    padding-inline: 25px;
+    padding-block: 20px;
     gap: 25px;
-    
 
     .avatarGroup {
         display: flex;
         align-items: center;
         gap: 10px;
         flex: 1;
-        cursor: pointer;
-        
+        cursor: pointer;        
 
         img {
             width: 48px; 
@@ -25,7 +24,7 @@
 
         p {
             color: $text-color;
-            font-size: 15px;
+            font-size: 18px;
             font-weight: 600;
         }
     }
