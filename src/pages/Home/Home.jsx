@@ -1,4 +1,6 @@
 import React from "react";
+
+import { useNavigate } from "react-router-dom";
 import Header from "../../components/Header/Header";
 import History from "../../components/History/History";
 import AddGameButton from "../../components/AddGameButton/AddGameButton";
@@ -23,9 +25,14 @@ export default function Home({ }) {
     const [percentWinsCount, setPercentWinsCount] = React.useState(0);
 
     const { user } = useUser(); // Получаем текущего пользователя
-    console.log("user", user.id);
+    const navigate = useNavigate();
+
 
     React.useEffect(() => {
+        if (!user) {
+            navigate("/start"); // Перенаправляем на /start
+            return;
+        }
         // Функция для загрузки статистики игрока
         const fetchGameStats = async () => {
             try {
@@ -41,7 +48,7 @@ export default function Home({ }) {
         };
 
         fetchGameStats();
-    }, [user.id]);
+    }, [user, navigate]);
 
     
 
