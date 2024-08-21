@@ -7,7 +7,7 @@ import MainButton from "../../components/MainButton/MainButton";
 
 import styles from "./SignUp.module.scss";
 
-import logoImage from "../../assets/Logo.svg";
+import logoImage from "../../assets/logoB.png";
 import googleLogo from "../../assets/Google-logo.svg";
 import twitterLogo from "../../assets/Frame.svg";
 import facebookLogo from "../../assets/Facebook-logo.svg";
@@ -99,7 +99,7 @@ export default function SignUp() {
                     {error && <p className={styles.error}>{error}</p>}
                 </div>
 
-                <div className={styles.socialButtonsGroup}>
+                {/* <div className={styles.socialButtonsGroup}>
                     <p>Войти с помощью</p>
                     <div className={styles.socialButtonsSubgroup}>
                         <button className={styles.socialButton}>
@@ -112,7 +112,7 @@ export default function SignUp() {
                             <img src={twitterLogo} alt="Twitter" />
                         </button>
                     </div>
-                </div>
+                </div> */}
             </div>
         </div>
     );

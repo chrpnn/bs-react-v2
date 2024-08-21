@@ -4,13 +4,17 @@ import History from "../../components/History/History";
 import AddGameButton from "../../components/AddGameButton/AddGameButton";
 // import AddResultModal from "../../components/AddResultModal/AddResultModal";
 import Games from "../../components/Games/Games";
+import Friends from "../Friends/Friends";
 import Footer from "../../components/Footer/Footer";
 import ProductCard from "../../components/ProductCard/ProductCard";
 
-import { getPlayerMatchCount } from "../../utils/gameService";
+// Импортируем функцию для получения статистики игрока
+import { fetchPlayerTotalStats } from "../../utils/gameService";
+import { useUser } from "../../UserContext"; // Импорт контекста пользователя для получения информации о текущем пользователе
 
 import styles from "./Home.module.scss";
 import AddResultDrawer from "../../components/AddResultDrawer/AddResultDrawer";
+
 
 export default function Home({ }) {
     const [modalActive, setModalActive] = React.useState(false);
@@ -18,15 +22,18 @@ export default function Home({ }) {
     const [gameCount, setGameCount] = React.useState(0);
     const [percentWinsCount, setPercentWinsCount] = React.useState(0);
 
+    const { user } = useUser(); // Получаем текущего пользователя
+    console.log("user", user.id);
+
     React.useEffect(() => {
+        // Функция для загрузки статистики игрока
         const fetchGameStats = async () => {
             try {
-                const { totalCount, winCount } = await getPlayerMatchCount();
-                setGameCount(totalCount);
-
-                if (totalCount > 0) {
-                    const percentage = (winCount / totalCount) * 100;
-                    setPercentWinsCount(percentage.toFixed(0)); // Округляем до двух знаков после запятой
+                // Передаем user.id в функцию fetchPlayerTotalStats
+                const stats = await fetchPlayerTotalStats(user.id);
+                if (stats) {
+                    setGameCount(stats.total_games_played);
+                    setPercentWinsCount(stats.total_win_rate);
                 }
             } catch (error) {
                 console.error("Error fetching game stats:", error);
@@ -34,9 +41,9 @@ export default function Home({ }) {
         };
 
         fetchGameStats();
-    }, []);
+    }, [user.id]);
 
-    console.log("percentWinsCount", percentWinsCount);
+    
 
     return (
         <div className={styles.root}>
@@ -53,7 +60,7 @@ export default function Home({ }) {
                         </p>
                     </div>
                     <div className={styles.total}>
-                        <p className={styles.counter}>{percentWinsCount} %</p>
+                        <p className={styles.counter}>{percentWinsCount.toFixed(0)} %</p>
                         <p className={styles.describe}>
                             Процент
                             <br />
@@ -64,7 +71,6 @@ export default function Home({ }) {
                 </div>
             </div>
 
-            {/* <AddResultModal active={modalActive} setActive={setModalActive} /> */}
             <AddResultDrawer active={modalActive} setActive={setModalActive} />
 
             <div className={styles.main}>
@@ -77,6 +83,7 @@ export default function Home({ }) {
                 </div> */}
 
                 <Games />
+                <Friends />
             </div>
             {/* <Footer /> */}
         </div>

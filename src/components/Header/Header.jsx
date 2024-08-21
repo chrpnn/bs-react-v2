@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
 import { useNavigate } from "react-router-dom";
@@ -13,27 +13,39 @@ import EditProfileModal from "../EditProfileModal/EditProfileModal";
 
 export default function Header() {
   const { user } = useUser();
+
   const navigate = useNavigate();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
-
-  console.log("user", user);
+  const [player, setPlayer] = useState(null);
 
   useEffect(() => {
-    if (user) {
-      setIsLoading(false);
-      console.log("user", user);
-    }
-    console.log("user", user);
-  }, [user]);
+    const fetchPlayer = async () => {
+      if (user) {
+        try {
+          const { data: playerData, error } = await supabase
+            .from("player")
+            .select("*")
+            .eq("id", user.id)
+            .single();
+          if (error) throw error;
+          setPlayer(playerData); // Сохраняем данные игрока в состояние
+          console.log(playerData);
+          setIsLoading(false);
+        } catch (error) {
+          console.error("Error fetching player:", error);
+        }
+      }
+    };
+
+    fetchPlayer(); // Вызываем функцию для получения данных игрока
+  }, [user]); // Функция будет вызвана при изменении `user`
 
   const handleLogout = async () => {
-    
-    
     try {
       const { error } = await supabase.auth.signOut();
       if (error) throw error;
-      setTimeout(() => navigate("/start"), 500);  // Задержка в 500 мс для отладки
+      setTimeout(() => navigate("/start"), 500); // Задержка в 500 мс для отладки
     } catch (error) {
       console.error("Ошибка при выходе:", error.message);
       navigate("/start");
@@ -57,7 +69,7 @@ export default function Header() {
               highlightColor="#cccccc40"
             />
           ) : (
-            <img src={user?.user_metadata?.avatar_url || avatar} alt="avatar" />
+            <img src={player.avatarURL || avatar} alt="avatar" />
           )}
           <p>
             Привет!
@@ -66,10 +78,10 @@ export default function Header() {
               <Skeleton
                 width={89}
                 baseColor="#f2f2f2"
-              highlightColor="#cccccc40"
+                highlightColor="#cccccc40"
               />
             ) : user ? (
-              user.user_metadata?.name || user.email
+              player.name || user.email
             ) : (
               "Guest"
             )}

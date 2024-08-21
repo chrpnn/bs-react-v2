@@ -7,7 +7,7 @@ import OAuthButton from "../../components/OAuthButton/OAuthButton";
 
 import styles from "./Login.module.scss";
 
-import logoImage from "../../assets/Logo.svg";
+import logoImage from "../../assets/logoB.png";
 import vkLogo from "../../assets/vk-logo.svg";
 import yandexLogo from "../../assets/yandex-logo.svg";
 import telegramLogo from "../../assets/telegram-logo.svg";
@@ -122,8 +122,8 @@ export default function LogIn() {
                 </div>
 
                 <div className={styles.signUp}>
-                    <span>New User? </span>
-                    <Link to="/signup">Sign Up</Link>
+                    <span>Новый пользователь? </span>
+                    <Link to="/signup">Зарегистрируйся</Link>
                 </div>
             </div>
         </div>

@@ -1,5 +1,3 @@
-import React from "react";
-
 import styles from "./FastInfo.module.scss";
 
 import PopLogo from "../../assets/clipboard-heart-svgrepo-com.svg";
@@ -47,19 +45,19 @@ export default function FastInfo({ uniqueGames, gameStats }) {
         <div className={styles.root}>
             <div className={styles.infoBlock}>
                 <img src={PopLogo} alt="Popular" />
-                <p className={styles.title}>{maxObject && maxObject.game_name ? maxObject.game_name.toUpperCase() : "Untitled"}</p>
+                <p className={styles.title}>{maxObject && maxObject.game_name ? maxObject.game_name.toUpperCase() : "Любимая"}</p>
                 <p>Партий всего: {maxCount}</p>
 
             </div>
             <div className={styles.infoBlock}>
                 <img src={SmileLogo} alt="Smile" />
-                <p className={styles.title}>{maxWinGame && maxWinGame.game_name ? maxWinGame.game_name.toUpperCase() : "Untitled"}</p>
-                <p>Побед: {maxWinGame ? maxWinGame.winPercentage.toFixed(1) : 0} %</p>
+                <p className={styles.title}>{maxWinGame && maxWinGame.game_name ? maxWinGame.game_name.toUpperCase() : "Лучшая"}</p>
+                <p>Побед: {maxWinGame ? maxWinGame.winPercentage.toFixed(0) : 0} %</p>
             </div>
             <div className={styles.infoBlock}>
                 <img src={SadLogo} alt="Sad" />
-                <p className={styles.title}>{minWinGame && minWinGame.game_name ? minWinGame.game_name.toUpperCase() : "Untitled"}</p>
-                <p>Побед: {minWinGame ? minWinGame.winPercentage.toFixed(1) : 0} %</p>
+                <p className={styles.title}>{minWinGame && minWinGame.game_name ? minWinGame.game_name.toUpperCase() : "Худшая"}</p>
+                <p>Побед: {minWinGame ? minWinGame.winPercentage.toFixed(0) : 0} %</p>
             </div>
         </div>
     );

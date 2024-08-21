@@ -1,10 +1,9 @@
-import React from "react";
 import styles from "./GameCard.module.scss";
 
 export default function GameCard({ id, game_name, count, wins, imageUrl }) {
     // Определение количества поражений и процентов побед
     const losses = count - wins;
-    const winRate = count > 0 ? ((wins / count) * 100).toFixed(2) : 0;
+    const winRate = count > 0 ? ((wins / count) * 100).toFixed(0) : 0;
 
     return (
         <div className={styles.root} key={id}>

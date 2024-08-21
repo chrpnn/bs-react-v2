@@ -1,10 +1,11 @@
 import React from "react";
 import { supabase } from "../../utils/supabaseClient";
-import { useAuth } from "../../hooks/useAuth";
 import GameResult from "../GameResult/GameResult";
 import Search from "../Search/Search";
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
+
+import { useUser } from "../../UserContext";
 
 import styles from "./History.module.scss";
 
@@ -14,7 +15,7 @@ export default function History() {
     const [showAll, setShowAll] = React.useState(false);
     const [isLoading, setIsLoading] = React.useState(true);
 
-    const user = useAuth();
+    const { user } = useUser();
 
     const sortedGames = React.useMemo(() => {
         return games.slice().sort((a, b) => new Date(b.date) - new Date(a.date));
@@ -77,13 +78,19 @@ export default function History() {
                     </button>
                 </div>
 
-                <Search searchValue={searchValue} setSearchValue={setSearchValue} />
+                <Search
+                    placeholder="Поиск по игре..." // Специфический плейсхолдер
+                    searchValue={searchValue}
+                    setSearchValue={setSearchValue}
+                    onSearch={() => console.log("Поиск выполнен!")}
+                />
             </div>
 
             {isLoading ? (
                 <div className={styles.sceletonContainer}>
                     {[...Array(3)].map((_, index) => (
                         <Skeleton
+                            key={index}
                             height={72}
                             borderRadius={12}
                             marginBottom={12}
@@ -93,7 +100,6 @@ export default function History() {
                     ))}
                 </div>
             ) : (
-                
                 <div className={styles.container}>
                     {displayedGames.map((obj, i) => (
                         <GameResult key={obj.id} {...obj} />

@@ -1,7 +1,65 @@
 @import "../../variables.scss";
 
 .root {
-    background-color: $background-color;
-    min-height: 100vh;
+    margin-block-end: 10px;
 
+    .sticky {
+        position: sticky;
+        top: 0;
+        background-color: $layout-background-color;
+        border-radius: 12px 12px 0 0;        
+        }
+
+    h2 {
+        font-size: 18px;
+        font-weight: 700;
+        color: $text-color;
+        
+    }
+
+    .titleGroup {
+        display: flex;
+        justify-content: space-between;
+        padding: 15px;
+
+        
+   
+    }
+
+    .toggleShowAll {
+        cursor: pointer;
+        border: none;
+        background-color: transparent;
+        color: $text-second-color;
+        font-size: 13px;
+    }
+
+
+    .container {
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+        padding-inline: 15px;
+    }
+
+    .sceletonContainer {
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+        padding-inline: 15px;
+        position: relative;
+        z-index: -1;
+    }
+
+    .pendingGroup {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        // padding: 15px;
+        
+
+        h2 {
+            padding: 15px;
+        }
+    }
 }

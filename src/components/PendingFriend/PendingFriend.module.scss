@@ -22,6 +22,7 @@
             display: flex;
             flex-direction: column;
             justify-content: center;
+            gap: 10px;
 
             .friendName {
                 color: $text-color;
@@ -30,36 +31,41 @@
                 font-weight: 700;
             }
 
-            .friensStats {
+            .buttonsContainer {
                 display: flex;
                 align-items: center;
+                gap: 10px;
 
-                p {
-                    color: $text-second-color;
+                button {
+                    border-radius: 8px;
+                    width: 140px;
+                    height: 30px;
+                    cursor: pointer;
+                    border: none; 
                     font-size: 12px;
-                    padding-inline: 10px;
-                    border-right: 1px solid $devider-color;
+                    color: $text-color;
                 }
 
-                p:first-child {
-                    padding-inline-start: 0px;
+                .acceptButton {
+                    background-color: $button-color;
+                    transition: background-color 0.3s ease;
+
+                    &:hover {
+                        background-color: darken($button-color, 10%);
+                    }
                 }
 
-                p:last-child {
-                    padding-inline: 10px;
-                    border: none;
+                .rejectButton {
+                    background-color: $disabled-button-color;
+                    transition: background-color 0.3s ease;
+
+                    &:hover {
+                        background-color: darken($disabled-button-color, 10%);
+                    }
                 }
             }
         }
     }
 
-    .button {
-        background-color: transparent;
-        border: none;
-        cursor: pointer;
 
-        .buttonIcon {
-            width: 20px;
-        }
-    }
 }

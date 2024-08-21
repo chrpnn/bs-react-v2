@@ -13,20 +13,16 @@ export default function AddResultDrawer({ active, setActive }) {
 
     const user = useAuth();
 
-    // Используем useEffect для загрузки списка игр с сервера при монтировании компонента
     React.useEffect(() => {
         const loadGames = async () => {
-            const gamesList = await fetchGames(); // Получаем список игр
+            const gamesList = await fetchGames();
             console.log("список игр:", gamesList);
-            setBoardgames(gamesList); // Устанавливаем их в состояние
+            setBoardgames(gamesList);
         };
 
         loadGames();
     }, []);
 
-    console.log(boardgames);
-
-    // Функция для добавления результата игры
     const handleAddGame = async () => {
         if (!selectedGame) {
             alert("Please select a game.");
@@ -35,26 +31,24 @@ export default function AddResultDrawer({ active, setActive }) {
 
         const newGameResult = {
             playerId: user.id,
-            gameName: selectedGame.name, // Имя выбранной игры
-            gameId: selectedGame.id, // ID выбранной игры
-            date: date, // Дата
-            result: status, // Статус (победа или поражение)
-            createdAt: new Date(), // Время создания
+            gameName: selectedGame.name,
+            gameId: selectedGame.id,
+            date: date,
+            result: status,
+            createdAt: new Date(),
         };
+
         console.log(newGameResult);
 
-        const success = await addGameResult(newGameResult.playerId, newGameResult.gameId, newGameResult); // Добавляем результат игры
-        
+        const success = await addGameResult(newGameResult.playerId, newGameResult.gameId, newGameResult);
 
         if (success) {
-            setActive(false); // Закрытие модального окна
-            setGameName(""); // Сброс полей формы
+            setActive(false);
+            setGameName("");
             setDate("");
             setStatus("win");
         }
     };
-
-    
 
     const handleGameChange = (e) => {
         const name = e.target.value;
@@ -74,20 +68,6 @@ export default function AddResultDrawer({ active, setActive }) {
                 <div className={styles.formGroup}>
                     <h2>Добавить результат</h2>
                     <div className={styles.form}>
-                        <div className={styles.checkboxGroup}>
-                            <label className={styles.checkbox}>
-                                <input
-                                    type="checkbox"
-                                    className={styles.hiddenCheckbox}
-                                    onChange={() =>
-                                        setShowAdditionalFields(!showAdditionalFields)
-                                    }
-                                />
-                                <span className={styles.customCheckbox}></span>
-                                Публичная партия
-                            </label>
-                        </div>
-
                         <label className={styles.label}>
                             <select
                                 className={styles.input}
@@ -114,53 +94,17 @@ export default function AddResultDrawer({ active, setActive }) {
                             <span className={styles.borderText}>Дата игры</span>
                         </label>
 
-                        {showAdditionalFields ? (
-                            <>
-                                <label className={styles.label}>
-                                    <select
-                                        className={styles.input}
-                                        value={selectedGame ? selectedGame.name : ""}
-                                        onChange={handleGameChange}
-                                    >
-                                        <option value="">Выбери группу</option>
-                                        {boardgames.map((game) => (
-                                            <option key={game.id} value={game.id}>
-                                                {game.name}
-                                            </option>
-                                        ))}
-                                    </select>
-                                    <span className={styles.borderText}>Группа</span>
-                                </label>
-
-                                <label className={styles.label}>
-                                    <select
-                                        className={styles.input}
-                                        value={selectedGame ? selectedGame.name : ""}
-                                        onChange={handleGameChange}
-                                    >
-                                        <option value="">Выбери победителя</option>
-                                        {boardgames.map((game) => (
-                                            <option key={game.id} value={game.id}>
-                                                {game.name.toUpperCase()}
-                                            </option>
-                                        ))}
-                                    </select>
-                                    <span className={styles.borderText}>Победитель</span>
-                                </label>
-                            </>
-                        ) : (
-                            <label className={styles.label}>
-                                <select
-                                    className={styles.input}
-                                    value={status}
-                                    onChange={(e) => setStatus(e.target.value)}
-                                >
-                                    <option value="win">Win</option>
-                                    <option value="lose">Lose</option>
-                                </select>
-                                <span className={styles.borderText}>Результат</span>
-                            </label>
-                        )}
+                        <label className={styles.label}>
+                            <select
+                                className={styles.input}
+                                value={status}
+                                onChange={(e) => setStatus(e.target.value)}
+                            >
+                                <option value="win">Win</option>
+                                <option value="lose">Lose</option>
+                            </select>
+                            <span className={styles.borderText}>Результат</span>
+                        </label>
 
                         <button
                             className={styles.button}

@@ -1,15 +1,21 @@
-import React from "react";
 import styles from "./Search.module.scss";
 
-export default function Search({ searchValue, setSearchValue }) {
+export default function Search({ placeholder, searchValue, setSearchValue, onSearch }) {
+  // Функция для обработки нажатия клавиши Enter в поле ввода
+  const handleKeyDown = (event) => {
+    if (event.key === "Enter" && onSearch) {
+      onSearch(searchValue);
+    }
+  };
 
   return (
     <div className={styles.root}>
       <input
         type="text"
-        placeholder="Поиск по игре..."
+        placeholder={placeholder}
         value={searchValue}
         onChange={(event) => setSearchValue(event.target.value)}
+        onKeyDown={handleKeyDown} // Обработка нажатия клавиш
         className={styles.searchInput}
       />
     </div>

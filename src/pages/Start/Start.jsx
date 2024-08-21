@@ -2,7 +2,7 @@ import React from "react";
 import MainButton from "../../components/MainButton/MainButton";
 import styles from "./Start.module.scss";
 
-import startPageImage from "../../assets/start_page.png";
+import startPageImage from "../../assets/Defaul.png";
 
 export default function Start() {
     return (
